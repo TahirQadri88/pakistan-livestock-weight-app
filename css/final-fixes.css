@@ -1,9 +1,12 @@
-/* Final QA overrides: original compact Zinda Wazan proportions, clean bilingual alignment. */
+/* Premium visual system — bilingual, mobile-first, original Zinda Wazan character preserved. */
 html,body{overflow-x:hidden}
-body{font-family:Inter,system-ui,sans-serif}
+body{font-family:Inter,system-ui,sans-serif;background:var(--paper)}
 [lang="ur"],.rtl{font-family:Inter,system-ui,sans-serif}
-.rtl .screen-head h2 span,.rtl .form-grid label>span,.rtl .choice-card small,.rtl .breed-card span,.rtl .urdu-help{font-family:'Noto Nastaliq Urdu',serif!important;line-height:2!important}
-.rtl .screen-head h2{line-height:1.65!important}
+/* Bilingual typography: separate scripts visually, never force Latin/numbers into Nastaliq. */
+.form-grid label{line-height:1.35}
+.form-grid label>span{display:block;margin-top:4px;font-family:'Noto Nastaliq Urdu',serif!important;font-size:13px;font-weight:400;line-height:2!important;color:var(--green-2)}
+.rtl .screen-head h2 span,.rtl .choice-card small,.rtl .breed-card span,.rtl .urdu-help{font-family:'Noto Nastaliq Urdu',serif!important;line-height:2!important}
+.rtl .screen-head h2{line-height:1.5!important}
 .rtl .screen-head p,.rtl .tip,.rtl .form-grid small{line-height:1.9!important}
 .rtl .choice-card{direction:rtl}
 .rtl .choice-card .number{right:auto;left:10px}
@@ -15,41 +18,106 @@ body{font-family:Inter,system-ui,sans-serif}
 .rtl .history-row{direction:rtl}
 .rtl .history-row .weight{margin-inline-start:12px}
 .rtl .form-grid input{direction:rtl;text-align:right}
-.rtl .form-grid input[type=number],.rtl .form-grid input[inputmode=decimal]{direction:ltr;text-align:left}
+.rtl .form-grid input[type=number],.rtl .form-grid input[inputmode=decimal],.rtl input#mobile{direction:ltr;text-align:left;unicode-bidi:plaintext}
+input#mobile{direction:ltr;unicode-bidi:plaintext}
+/* Header: premium compact identity bar */
+.app-header{background:rgba(255,253,250,.88);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.brand-mark{position:relative;box-shadow:0 8px 20px rgba(21,91,73,.18);overflow:hidden}
+.brand-mark:after{content:"";position:absolute;inset:1px;border-radius:inherit;border:1px solid rgba(255,255,255,.18);pointer-events:none}
 .header-actions{align-items:center;flex-shrink:0}
-.header-actions .icon-btn{white-space:nowrap;display:grid;place-items:center}
+.header-actions .icon-btn,.header-actions .ghost-btn{white-space:nowrap;display:grid;place-items:center}
 #langBtn{font-family:'Noto Nastaliq Urdu',Inter,sans-serif;font-size:11px;line-height:1}
-.result-actions .action{white-space:normal;line-height:1.35}
-.result-actions .action.green{font-weight:800}
-@media(max-width:520px){
- .app-header{position:sticky;top:0;z-index:50}
- .header-actions{gap:4px}
- .header-actions .icon-btn{width:36px;min-width:36px}
- main{width:100%;padding:0!important;background:transparent!important;box-shadow:none!important}
- .screen{margin:10px 10px 14px!important}
- .choice-card{min-height:116px}
+/* Screens: stronger hierarchy, less generic SaaS feeling */
+.screen{position:relative;overflow:hidden}
+.screen:before{content:"";position:absolute;top:0;left:46px;right:46px;height:3px;background:linear-gradient(90deg,var(--green),var(--gold),transparent);border-radius:0 0 8px 8px;opacity:.75}
+.screen-head{position:relative}
+.screen-head h2{letter-spacing:-.045em}
+.screen-head h2 span{color:var(--green-2)}
+.step-label{display:inline-flex;align-items:center;gap:8px}
+.step-label:before{content:"";width:24px;height:1px;background:var(--gold);display:inline-block}
+/* Animal cards: illustrated badge + premium depth */
+.choice-grid.four{gap:16px}
+.choice-card{overflow:hidden;isolation:isolate;min-height:164px;border-color:#d9e1dc;background:linear-gradient(180deg,#fff 0%,#fbfdfb 100%);box-shadow:0 10px 28px rgba(20,44,36,.055)}
+.choice-card:before{content:"";position:absolute;width:110px;height:110px;border-radius:50%;top:-42px;right:-30px;background:radial-gradient(circle,rgba(30,115,92,.12),rgba(30,115,92,0) 70%);z-index:-1}
+.choice-card:hover{border-color:#79a895;box-shadow:0 18px 36px rgba(20,44,36,.10)}
+.choice-card.selected{border:2px solid var(--green);background:linear-gradient(180deg,#f2f8f4,#e8f1ec)}
+.animal-icon{width:64px;height:64px;margin-bottom:12px;border-radius:20px;display:grid;place-items:center;background:linear-gradient(145deg,#f1f7f3,#e0eee7);border:1px solid #d1e2da;color:var(--green-2);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 18px rgba(21,91,73,.08)}
+.animal-icon svg{width:44px;height:44px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 2px 1px rgba(21,91,73,.08))}
+.choice-card strong{font-size:16px}
+.choice-card small{color:#427465}
+.choice-card .number{top:14px;right:15px;background:#f1f5f2;border:1px solid #dce7e1;border-radius:999px;padding:4px 6px;color:#6c7e76}
+.rtl .choice-card .number{left:15px;right:auto}
+/* Breed cards: gold accent, clear selection state */
+.breed-card{overflow:hidden;background:linear-gradient(135deg,#fffefa,#fbf8ef);border-color:#ddcda8;box-shadow:0 8px 22px rgba(80,61,26,.045)}
+.breed-card:before{content:"";width:4px;align-self:stretch;position:absolute;left:0;top:0;bottom:0;background:linear-gradient(180deg,var(--gold),#d9bd7c);opacity:.65}
+.rtl .breed-card:before{left:auto;right:0}
+.breed-card:hover,.breed-card.selected{background:linear-gradient(135deg,#fffdf4,#f8f0da);border-color:var(--gold);box-shadow:0 14px 28px rgba(181,138,66,.12)}
+.breed-card small{background:#f5ecd8;color:#896b38;border-radius:999px;padding:5px 8px}
+/* Measurement chips */
+.context-strip{gap:8px}
+.context-chip{background:linear-gradient(135deg,#edf6f1,#e3eee8);border:1px solid #d2e3da;padding:7px 10px;box-shadow:0 3px 10px rgba(21,91,73,.04)}
+/* Inputs: clear field affordance */
+.form-grid input{box-shadow:inset 0 1px 1px rgba(20,44,36,.025),0 4px 14px rgba(20,44,36,.025)}
+.form-grid input:focus{transform:translateY(-1px)}
+/* Tip card */
+.tip{border:1px solid #d8def2;border-left:4px solid #6476d8;border-radius:12px;background:linear-gradient(135deg,#f5f7ff,#edf1ff);box-shadow:0 7px 20px rgba(62,82,187,.06)}
+/* Result card: premium report treatment */
+.result-card{box-shadow:0 18px 45px rgba(20,44,36,.08)}
+.result-top{position:relative;overflow:hidden;background:linear-gradient(135deg,#0d6b54,#1b8068)}
+.result-top:after{content:"";position:absolute;width:190px;height:190px;border-radius:50%;right:-85px;top:-115px;border:1px solid rgba(255,255,255,.13);box-shadow:0 0 0 28px rgba(255,255,255,.035),0 0 0 56px rgba(255,255,255,.025)}
+.result-table th{letter-spacing:.01em}
+.result-table td{vertical-align:middle}
+.result-table tr:nth-child(3) td{font-weight:600}
+.result-table .big{letter-spacing:-.03em}
+.result-note{background:linear-gradient(135deg,#f6f8ff,#edf2ff);box-shadow:0 6px 18px rgba(62,93,194,.06)}
+/* Actions: icon-led hierarchy with distinct visual language */
+.result-actions{gap:11px}
+.result-actions .action{position:relative;display:flex;align-items:center;justify-content:center;gap:9px;min-height:54px;border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 18px rgba(20,44,36,.08);font-family:Inter,sans-serif;font-size:11px;letter-spacing:-.01em}
+.result-actions .action:before{content:"";width:18px;height:18px;flex:0 0 18px;background:currentColor;opacity:.96;mask-repeat:no-repeat;mask-position:center;mask-size:contain;-webkit-mask-repeat:no-repeat;-webkit-mask-position:center;-webkit-mask-size:contain}
+.result-actions .action.blue:before{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpath d='m21 15-5-5L5 21'/%3E%3C/svg%3E");-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='3' y='3' width='18' height='18' rx='3'/%3E%3Ccircle cx='8.5' cy='8.5' r='1.5'/%3E%3Cpath d='m21 15-5-5L5 21'/%3E%3C/svg%3E")}
+.result-actions .action.red:before{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 2h9l4 4v16H6z'/%3E%3Cpath d='M14 2v5h5M9 13h6M9 17h6'/%3E%3C/svg%3E");-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 2h9l4 4v16H6z'/%3E%3Cpath d='M14 2v5h5M9 13h6M9 17h6'/%3E%3C/svg%3E")}
+.result-actions .action.green:before{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12h8M12 8v8'/%3E%3C/svg%3E");-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='12' cy='12' r='9'/%3E%3Cpath d='M8 12h8M12 8v8'/%3E%3C/svg%3E")}
+.result-actions .action.slate:before{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 4h8M8 2h8M9 8h6M6 5h12v17H6z'/%3E%3C/svg%3E");-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M8 4h8M8 2h8M9 8h6M6 5h12v17H6z'/%3E%3C/svg%3E")}
+.result-actions .action.gold:before{mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E");-webkit-mask-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 5v14M5 12h14'/%3E%3C/svg%3E")}
+.result-actions .action:hover{filter:none;transform:translateY(-2px);box-shadow:0 12px 24px rgba(20,44,36,.12)}
+/* Navigation and footer */
+.screen-nav{border-top:1px solid var(--line)}
+.link-btn{display:inline-flex;align-items:center;gap:7px;min-height:36px}
+footer{max-width:900px;margin:0 auto}
+footer nav a{transition:.15s}
+footer nav a:hover{transform:translateY(-1px)}
+/* Mobile polish */
+@media(max-width:760px){
+ .app{width:calc(100% - 20px)}
+ .app-header{min-height:68px;position:sticky;top:0;z-index:50}
+ .hero{display:none}
+ .screen{padding:28px 18px;border-radius:18px}
+ .screen:before{left:18px;right:18px}
+ .form-grid{grid-template-columns:1fr;gap:17px}
+ .choice-grid.four{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+ .choice-card{min-height:138px}
  .breed-card{min-height:86px}
- .form-grid input{height:50px}
- .result-card{border-radius:14px}
- .result-top .title{font-size:20px;line-height:1.3}
- .result-info{font-size:10px;line-height:1.8}
- .result-table th,.result-table td{font-size:10px;padding:11px 9px;vertical-align:middle}
- .result-table .big{font-size:20px}
- .result-actions{gap:8px}
- .action{min-height:48px;padding:9px 10px}
- footer{padding-inline:18px}
+ .result-actions{grid-template-columns:1fr}
+}
+@media(max-width:520px){
+ .app{width:100%}
+ .app-header{margin:0!important;border-radius:0 0 16px 16px;padding:11px 13px!important;gap:8px}
+ .brand{min-width:0;flex:1;gap:8px}.brand-mark{width:35px;height:35px;border-radius:10px;flex:0 0 35px}.brand>div{min-width:0}.brand strong{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand small{font-size:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+ .header-actions{gap:5px}.header-actions .icon-btn{width:36px;min-width:36px;height:36px;border-radius:11px}
+ main{width:100%;padding:0!important;background:transparent!important;box-shadow:none!important}
+ .screen{margin:10px 10px 14px!important;padding:23px 15px;border-radius:16px}
+ .screen-head{margin-bottom:21px}.screen-head h2{font-size:24px;line-height:1.25}.screen-head p{font-size:12px;line-height:1.6}
+ .step-label{font-size:9px}.step-label:before{width:18px}
+ .form-grid input{height:52px;font-size:15px}
+ .form-grid label>span{font-size:12px}
+ .choice-card{min-height:122px;padding:13px 7px;border-radius:14px}.animal-icon{width:56px;height:56px;border-radius:17px;margin-bottom:9px}.animal-icon svg{width:40px;height:40px}.choice-card strong{font-size:14px}.choice-card small{font-size:12px}
+ .breed-card{min-height:82px;padding:14px 15px}.breed-card strong{font-size:13px}.breed-card span{font-size:13px}.breed-card small{font-size:9px;padding:4px 7px}
+ .context-chip{font-size:8px;padding:6px 8px}
+ .result-card{border-radius:14px}.result-top{padding:19px 17px}.result-top .title{font-size:20px;line-height:1.3}.result-info{padding:15px 17px;font-size:10px;line-height:1.75}.result-table th,.result-table td{padding:11px 9px;font-size:10px;vertical-align:middle}.result-table .big{font-size:20px}.result-note{margin:14px 15px;padding:11px 10px;font-size:10px}
+ .result-actions{gap:8px;margin-top:14px}.result-actions .action{min-height:50px;font-size:11px;border-radius:12px}.result-actions .action:before{width:17px;height:17px;flex-basis:17px}
+ footer{padding:20px 18px 30px}footer p{font-size:9px}footer nav{gap:13px;flex-wrap:wrap}
 }
 @media(max-width:380px){
- .app-header{padding-inline:10px!important}
- .brand strong{font-size:12px}
- .brand small{font-size:7px}
- .brand-mark{width:32px;height:32px;flex-basis:32px}
- .screen{margin-inline:7px!important;padding:19px 12px!important}
- .screen-head h2{font-size:22px}
- .choice-card{min-height:106px;padding-inline:4px}
- .choice-card strong{font-size:13px}
- .choice-card small{font-size:11px}
- .breed-card{padding:13px 11px}
- .breed-card strong{font-size:13px}
- .breed-card span{font-size:13px}
+ .app-header{padding-inline:9px!important}.brand strong{font-size:12px}.brand small{font-size:7px}.brand-mark{width:32px;height:32px;flex-basis:32px}
+ .screen{margin-inline:7px!important;padding:20px 12px!important}.screen-head h2{font-size:22px}.choice-grid.four{gap:8px}.choice-card{min-height:108px}.animal-icon{width:50px;height:50px}.animal-icon svg{width:36px;height:36px}.choice-card strong{font-size:13px}.choice-card small{font-size:11px}.breed-card{padding:12px 11px}.breed-card strong{font-size:12px}.breed-card span{font-size:12px}.result-actions .action{min-height:48px}
 }

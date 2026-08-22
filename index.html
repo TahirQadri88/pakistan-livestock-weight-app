@@ -18,11 +18,11 @@
         <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5h12.5l2 2.4v5.6H6.5L4 15V9.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M7 9.5 8.5 6h6l2 3.5M7.5 17.5v1.5M16.5 17.5v1.5M19 13h1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
         <span><strong data-i18n="brand">Pakistan Livestock</strong><small data-i18n="brandSub">Weight Estimator</small></span>
       </a>
-      <div class="top-actions"><button class="icon-button" id="languageToggle" type="button" aria-label="Switch language" data-i18n-aria-label="languageLabel">ط§ط±ط¯ظˆ</button><button class="icon-button theme-button" id="themeToggle" type="button" aria-label="Toggle dark mode" data-i18n-aria-label="themeLabel"><span aria-hidden="true">â—گ</span></button></div>
+      <div class="top-actions"><button class="icon-button" id="languageToggle" type="button" aria-label="Switch language" data-i18n-aria-label="languageLabel">اردو</button><button class="icon-button theme-button" id="themeToggle" type="button" aria-label="Toggle dark mode" data-i18n-aria-label="themeLabel"><span aria-hidden="true">◐</span></button></div>
     </header>
     <main id="main">
       <section class="hero" aria-labelledby="pageTitle">
-        <div class="hero-copy"><div class="eyebrow"><span></span><span data-i18n="eyebrow">FIELD TOOL آ· PAKISTAN</span></div><h1 id="pageTitle" data-i18n-html="headline">Know the animal.<br><em>Know the weight.</em></h1><p data-i18n="intro">A refined field calculator for estimating livestock live weight from body measurements.</p></div>
+        <div class="hero-copy"><div class="eyebrow"><span></span><span data-i18n="eyebrow">FIELD TOOL · PAKISTAN</span></div><h1 id="pageTitle" data-i18n-html="headline">Know the animal.<br><em>Know the weight.</em></h1><p data-i18n="intro">A refined field calculator for estimating livestock live weight from body measurements.</p></div>
         <aside class="hero-note"><div class="hero-note-top"><span class="hero-note-label" data-i18n="fieldNote">FIELD NOTE</span><span class="hero-note-index">01</span></div><strong data-i18n-html="noteTitle">Measure once.<br>Estimate with care.</strong><p data-i18n="noteCopy">Designed for quick use in farms, markets and livestock yards across Pakistan.</p><div class="hero-rule"></div><div class="hero-meta"><span data-i18n="species">04 species</span><span data-i18n="measurements">02 measurements</span><span data-i18n="offline">Offline ready</span></div></aside>
       </section>
       <section class="workspace" aria-label="Weight calculator" data-i18n-aria-label="calculatorLabel">
@@ -39,13 +39,13 @@
               <div class="measure-field"><label for="girth" data-i18n="heartGirth">Heart girth</label><div class="input-wrap"><input id="girth" name="girth" inputmode="decimal" type="number" min="20" max="120" step="0.1" required aria-describedby="girthHelp girthError" placeholder="e.g. 72"><span>in</span></div><small id="girthHelp" data-i18n="girthHelp">Measure around the chest, just behind the front legs.</small><small class="field-error" id="girthError"></small></div>
               <div class="measure-field"><label for="length" data-i18n="bodyLength">Body length</label><div class="input-wrap"><input id="length" name="length" inputmode="decimal" type="number" min="20" max="100" step="0.1" required aria-describedby="lengthHelp lengthError" placeholder="e.g. 68"><span>in</span></div><small id="lengthHelp" data-i18n="lengthHelp">Shoulder point to the base of the tail.</small><small class="field-error" id="lengthError"></small></div>
             </div>
-            <div class="notice" id="validation" role="alert" hidden></div><button class="primary-button" type="submit"><span data-i18n="calculate">Calculate estimated weight</span><span aria-hidden="true">â†’</span></button>
+            <div class="notice" id="validation" role="alert" hidden></div><button class="primary-button" type="submit"><span data-i18n="calculate">Calculate estimated weight</span><span aria-hidden="true">→</span></button>
           </form>
         </div>
       </section>
-      <section class="result-section" id="resultSection" hidden aria-live="polite" tabindex="-1"><div class="result-card"><div class="result-top"><span class="section-kicker" data-i18n="resultKicker">ESTIMATED LIVE WEIGHT</span><button class="text-button" id="shareButton" type="button" data-i18n="share">Share result</button></div><div class="weight-number"><span id="weightValue">â€”</span><small>kg</small></div><div class="result-meta"><span id="animalLabel">Cattle</span><span aria-hidden="true">â€¢</span><span id="measurementLabel">72 أ— 68 in</span></div><div class="result-note" data-i18n="formulaNote">Provisional estimate â€” formula pending verification. Actual live weight can vary.</div><div class="share-status" id="shareStatus" role="status" aria-live="polite"></div></div></section>
+      <section class="result-section" id="resultSection" hidden aria-live="polite" tabindex="-1"><div class="result-card"><div class="result-top"><span class="section-kicker" data-i18n="resultKicker">ESTIMATED LIVE WEIGHT</span><button class="text-button" id="shareButton" type="button" data-i18n="share">Share result</button></div><div class="weight-number"><span id="weightValue">—</span><small>kg</small></div><div class="result-meta"><span id="animalLabel">Cattle</span><span aria-hidden="true">•</span><span id="measurementLabel">72 × 68 in</span></div><div class="result-note" data-i18n="formulaNote">Provisional estimate — formula pending verification. Actual live weight can vary.</div><div class="share-status" id="shareStatus" role="status" aria-live="polite"></div></div></section>
       <section class="history-section" id="historySection"><div class="section-heading"><div><span class="section-kicker" data-i18n="recent">RECENT</span><h2 data-i18n="history">Calculation history</h2></div><button class="text-button" id="clearHistory" type="button" data-i18n="clear">Clear</button></div><div id="historyList" class="history-list"></div></section>
-    </main><footer><span>آ© 2026 Khyber Traders</span><span data-i18n="footerNote">For estimation purposes only</span></footer>
+    </main><footer><span>© 2026 Khyber Traders</span><span data-i18n="footerNote">For estimation purposes only</span></footer>
   </div><script type="module" src="./js/app.js"></script>
-</body></html>
-
+</body>
+</html>

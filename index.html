@@ -13,66 +13,17 @@
 <body>
 <div class="app">
 <header class="app-header">
-  <div class="brand"><span class="brand-mark" aria-hidden="true">◌</span><div><strong>Livestock Weight Calculator</strong><small>Pakistan · Khyber Traders</small></div></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true">◌</span><div><strong>Livestock Weight Calculator</strong><small id="headerMeta">Farm: N/A · User ID: N/A</small></div></div>
   <div class="header-actions"><button id="historyBtn" class="ghost-btn" type="button">History / <span>ہسٹری</span></button><button id="langBtn" class="icon-btn" type="button" aria-label="Switch language">اردو</button><button id="themeBtn" class="icon-btn" type="button" aria-label="Toggle dark mode">◐</button></div>
 </header>
-
 <main>
-<section class="hero">
-  <div><span class="eyebrow">FIELD TOOL · PAKISTAN</span><h1>Know the animal.<br><em>Know the weight.</em></h1><p>Record the farm once, select the animal profile, measure in centimetres and get a practical live-weight estimate.</p></div>
-  <div class="hero-card"><span>ORIGINAL WORKFLOW</span><strong>Profile → Animal → Breed → Measure → Result</strong><small>Designed around the proven Zinda Wazan user flow, with a cleaner modern interface.</small></div>
-</section>
-
-<section id="step1" class="screen active" aria-labelledby="welcomeTitle">
-  <div class="screen-head"><div><span class="step-label">01 · PROFILE</span><h2 id="welcomeTitle">Welcome <span>/ خوش آمدید</span></h2><p>Enter your farm details or continue with your saved profile.</p></div></div>
-  <form id="profileForm" class="form-grid" novalidate>
-    <label>Farm Name <span>/ فارم کا نام</span><input id="farmName" required autocomplete="organization" placeholder="e.g. Khyber Traders Dairy Farm"></label>
-    <label>Mobile Number <span>/ موبائل نمبر</span><input id="mobile" required inputmode="tel" autocomplete="tel" placeholder="+92 3XX XXXXXXX"></label>
-    <label>Owner Name <span>/ فارم مالک کا نام</span><input id="owner" required autocomplete="name" placeholder="e.g. Muhammad Tahir Qadri"></label>
-    <label>City <span>/ شہر</span><input id="city" required autocomplete="address-level2" placeholder="e.g. Karachi"></label>
-    <div class="form-actions"><button class="primary-btn" type="submit">Start / شروع کریں <span>→</span></button><button id="clearProfile" class="danger-btn" type="button">Logout / Clear All Data <span>/ لاگ آؤٹ</span></button></div>
-  </form>
-</section>
-
-<section id="step2" class="screen" aria-labelledby="animalTitle" hidden>
-  <div class="screen-head center"><span class="step-label">02 · ANIMAL</span><h2 id="animalTitle">Animal Selection <span>/ جانور کا انتخاب</span></h2><p>Select the animal type.</p></div>
-  <div id="animalGrid" class="choice-grid four"></div>
-  <div class="screen-nav"><button id="backProfile" class="link-btn" type="button">← Back to Profile / واپس جائیں</button></div>
-</section>
-
-<section id="breedStep" class="screen" aria-labelledby="breedTitle" hidden>
-  <div class="screen-head center"><span class="step-label">02 · BREED PROFILE</span><h2 id="breedTitle">Select Breed Profile <span>/ نسل کا انتخاب</span></h2><p id="breedIntro">Choose the closest available profile for better estimation.</p></div>
-  <div id="breedGrid" class="breed-grid"></div>
-  <div class="screen-nav"><button id="backAnimal" class="link-btn" type="button">← Change Animal Type / جانور کی قسم بدلیں</button></div>
-</section>
-
-<section id="step3" class="screen" aria-labelledby="measureTitle" hidden>
-  <div class="screen-head"><span class="step-label">03 · MEASUREMENTS</span><h2 id="measureTitle">Measurements <span>/ ناپ</span></h2><p>Enter the animal's tag ID and measurements.</p></div>
-  <div class="context-strip" id="contextStrip"></div>
-  <form id="measureForm" novalidate>
-    <div class="form-grid single">
-      <label>Animal Tag ID <span>/ جانور کا ٹیگ ID</span><input id="tagId" placeholder="e.g. A123 / No Tag" autocomplete="off"></label>
-      <label>Heart Girth (G) in CM <span>/ سینٹی میٹر میں دل کی گھیرائی</span><input id="girth" required inputmode="decimal" type="number" min="40" max="300" step="0.1" placeholder="e.g. 180"><small>Measure around the chest, just behind the front legs.</small><small class="urdu-help">دل کے پیچھے سینے کے گرد ٹیپ سیدھی رکھ کر ناپ لیں۔</small></label>
-      <label>Body Length (L) in CM <span>/ جسم کی لمبائی</span><input id="length" required inputmode="decimal" type="number" min="30" max="300" step="0.1" placeholder="e.g. 160"><small>Measure from the shoulder point to the base of the tail.</small><small class="urdu-help">کندھے کے نقطے سے دم کی جڑ تک سیدھی لمبائی ناپیں۔</small></label>
-    </div>
-    <div id="measureError" class="form-error" role="alert" hidden></div>
-    <div class="tip"><strong>TIP / اہم بات</strong><span>Keep the tape level and snug. Do not pull it tight.</span></div>
-    <button class="primary-btn full" type="submit">Calculate Weight / وزن نکالیں <span>→</span></button>
-  </form>
-  <div class="screen-nav"><button id="backBreed" class="link-btn" type="button">← Back to Breed Selection / نسل کے انتخاب کی طرف واپس</button></div>
-</section>
-
-<section id="step4" class="screen result-screen" aria-labelledby="resultTitle" hidden>
-  <div class="screen-head center"><span class="step-label">04 · RESULT</span><h2 id="resultTitle">Calculation Result <span>/ وزن کا حساب</span></h2><p>Results calculated using the G² × L ÷ D profile formula.</p></div>
-  <div id="resultCard" class="result-card"></div>
-  <div class="result-actions"><button id="imageBtn" class="action blue" type="button">▧ Export Image / تصویر</button><button id="pdfBtn" class="action red" type="button">▣ Export PDF</button><button id="whatsappBtn" class="action green" type="button">● Share via WhatsApp / واٹس ایپ</button><button id="csvBtn" class="action slate" type="button">▤ Export CSV / ایکسل</button><button id="newCalc" class="action gold" type="button">Start New Calculation / نئی شروعات کریں</button></div>
-  <div class="screen-nav"><button id="backMeasure" class="link-btn" type="button">← Back to Measurements / ناپ کی طرف واپس جائیں</button></div>
-</section>
-
-<section id="historyPanel" class="history-panel" hidden>
-  <div class="section-title"><span class="step-label">RECENT</span><h2>Calculation History <span>/ ہسٹری</span></h2><button id="clearHistory" class="ghost-btn" type="button">Clear</button></div>
-  <div id="historyList"></div>
-</section>
+<section class="hero"><div><span class="eyebrow">FIELD TOOL · PAKISTAN</span><h1>Know the animal.<br><em>Know the weight.</em></h1><p>Record the farm once, select the animal profile, measure in centimetres and get a practical live-weight estimate.</p></div><div class="hero-card"><span>ORIGINAL WORKFLOW</span><strong>Profile → Animal → Breed → Measure → Result</strong><small>Inspired by the proven Zinda Wazan flow, rebuilt with a cleaner, faster interface.</small></div></section>
+<section id="step1" class="screen active" aria-labelledby="welcomeTitle"><div class="screen-head"><div><span class="step-label">01 · PROFILE</span><h2 id="welcomeTitle">Welcome <span>/ خوش آمدید</span></h2><p>Enter your farm details or continue with your saved profile.</p></div></div><form id="profileForm" class="form-grid" novalidate><label>Farm Name <span>/ فارم کا نام</span><input id="farmName" required autocomplete="organization" placeholder="e.g. Khyber Traders Dairy Farm"></label><label>Mobile Number <span>/ موبائل نمبر</span><input id="mobile" required inputmode="tel" autocomplete="tel" placeholder="+92 3XX XXXXXXX"></label><label>Owner Name <span>/ فارم مالک کا نام</span><input id="owner" required autocomplete="name" placeholder="e.g. Muhammad Tahir Qadri"></label><label>City <span>/ شہر</span><input id="city" required autocomplete="address-level2" placeholder="e.g. Karachi"></label><div class="form-actions"><button class="primary-btn" type="submit">Start / شروع کریں <span>→</span></button><button id="clearProfile" class="danger-btn" type="button">Logout / Clear All Data <span>/ لاگ آؤٹ</span></button></div></form></section>
+<section id="step2" class="screen" aria-labelledby="animalTitle" hidden><div class="screen-head center"><span class="step-label">02 · ANIMAL</span><h2 id="animalTitle">Animal Selection <span>/ جانور کا انتخاب</span></h2><p>Select the animal type.</p></div><div id="animalGrid" class="choice-grid four"></div><div class="screen-nav"><button id="backProfile" class="link-btn" type="button">← Back to Profile / واپس جائیں</button></div></section>
+<section id="breedStep" class="screen" aria-labelledby="breedTitle" hidden><div class="screen-head center"><span class="step-label">02 · BREED PROFILE</span><h2 id="breedTitle">Select Breed Profile <span>/ نسل کا انتخاب</span></h2><p id="breedIntro">Choose the closest available profile for better estimation.</p></div><div id="breedGrid" class="breed-grid"></div><div class="screen-nav"><button id="backAnimal" class="link-btn" type="button">← Change Animal Type / جانور کی قسم بدلیں</button></div></section>
+<section id="step3" class="screen" aria-labelledby="measureTitle" hidden><div class="screen-head"><span class="step-label">03 · MEASUREMENTS</span><h2 id="measureTitle">Measurements <span>/ ناپ</span></h2><p>Enter the animal's tag ID and measurements.</p></div><div class="context-strip" id="contextStrip"></div><form id="measureForm" novalidate><div class="form-grid single"><label>Animal Tag ID <span>/ جانور کا ٹیگ ID</span><input id="tagId" placeholder="e.g. A123 / No Tag" autocomplete="off"></label><label>Heart Girth (G) in CM <span>/ سینٹی میٹر میں دل کی گھیرائی</span><input id="girth" required inputmode="decimal" type="number" min="40" max="300" step="0.1" placeholder="e.g. 180"><small>Measure around the chest, just behind the front legs.</small><small class="urdu-help">دل کے پیچھے سینے کے گرد ٹیپ سیدھی رکھ کر ناپ لیں۔</small></label><label>Body Length (L) in CM <span>/ جسم کی لمبائی</span><input id="length" required inputmode="decimal" type="number" min="30" max="300" step="0.1" placeholder="e.g. 160"><small>Measure from the shoulder point to the base of the tail.</small><small class="urdu-help">کندھے کے نقطے سے دم کی جڑ تک سیدھی لمبائی ناپیں۔</small></label></div><div id="measureError" class="form-error" role="alert" hidden></div><div class="tip"><strong>TIP / اہم بات</strong><span>Keep the tape level and snug. Do not pull it tight.</span></div><button class="primary-btn full" type="submit">Calculate Weight / وزن نکالیں <span>→</span></button></form><div class="screen-nav"><button id="backBreed" class="link-btn" type="button">← Back to Breed Selection / نسل کے انتخاب کی طرف واپس</button></div></section>
+<section id="step4" class="screen result-screen" aria-labelledby="resultTitle" hidden><div class="screen-head center"><span class="step-label">04 · RESULT</span><h2 id="resultTitle">Calculation Result <span>/ وزن کا حساب</span></h2><p>Results calculated using the G² × L ÷ D profile formula.</p></div><div id="resultCard" class="result-card"></div><div class="result-actions"><button id="imageBtn" class="action blue" type="button">▧ Export Image / تصویر</button><button id="pdfBtn" class="action red" type="button">▣ Export PDF</button><button id="whatsappBtn" class="action green" type="button">● Share via WhatsApp / واٹس ایپ</button><button id="csvBtn" class="action slate" type="button">▤ Export CSV / ایکسل</button><button id="newCalc" class="action gold" type="button">Start New Calculation / نئی شروعات کریں</button></div><div class="screen-nav"><button id="backMeasure" class="link-btn" type="button">← Back to Measurements / ناپ کی طرف واپس جائیں</button></div></section>
+<section id="historyPanel" class="history-panel" hidden><div class="section-title"><div><span class="step-label">RECENT</span><h2>Calculation History <span>/ ہسٹری</span></h2></div><button id="clearHistory" class="ghost-btn" type="button">Clear</button></div><div id="historyList"></div></section>
 </main>
 <footer><p>Khyber Traders (Animal Health Division) · Wholesale Veterinary Medicine & Surgical Instruments</p><nav><a href="#">Google Maps</a><a href="#">Facebook</a><a href="#">Instagram</a><a href="#">WhatsApp</a></nav><small>© 2026 Khyber Traders · For estimation purposes only</small></footer>
 </div>

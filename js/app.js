@@ -1,21 +1,62 @@
-const $ = (s) => document.querySelector(s);
-const historyKey = 'plw-history-v1';
-const state = { lang: localStorage.getItem('plw-lang') || 'en' };
-const translations = {
-  en:{eyebrow:'FIELD TOOL · PAKISTAN',headline:'Know the animal.<br><em>Know the weight.</em>',intro:'A refined field calculator for estimating livestock live weight from body measurements.',stepAnimal:'Animal',stepMeasure:'Measure',stepResult:'Result',estimate:'LIVE WEIGHT ESTIMATE',measureAnimal:'Measure your animal',animalType:'Animal type',cattle:'Cattle',buffalo:'Buffalo',sheep:'Sheep',goat:'Goat',heartGirth:'Heart girth',bodyLength:'Body length',girthHelp:'Measure around the chest, just behind the front legs.',lengthHelp:'Shoulder point to the base of the tail.',calculate:'Calculate estimated weight',resultKicker:'ESTIMATED LIVE WEIGHT',share:'Share result',estimateNote:'This is an estimate. Actual live weight can vary with breed, condition and measurement accuracy.',recent:'RECENT',history:'Calculation history',clear:'Clear',noHistory:'Your recent calculations will appear here.',footerNote:'For estimation purposes only'},
-  ur:{eyebrow:'فیلڈ ٹول · پاکستان',headline:'جانور کو سمجھیں۔<br><em>وزن کا اندازہ لگائیں۔</em>',intro:'جسمانی پیمائش کے ذریعے مویشی کے زندہ وزن کا تخمینہ لگانے کے لیے ایک جدید فیلڈ کیلکولیٹر۔',stepAnimal:'جانور',stepMeasure:'پیمائش',stepResult:'نتیجہ',estimate:'زندہ وزن کا تخمینہ',measureAnimal:'اپنے جانور کی پیمائش کریں',animalType:'جانور کی قسم',cattle:'گائے',buffalo:'بھینس',sheep:'بھیڑ',goat:'بکری',heartGirth:'سینے کا گھیر',bodyLength:'جسم کی لمبائی',girthHelp:'اگلی ٹانگوں کے پیچھے سینے کے گرد پیمائش کریں۔',lengthHelp:'کندھے سے دم کے شروع تک پیمائش کریں۔',calculate:'وزن کا تخمینہ لگائیں',resultKicker:'زندہ وزن کا تخمینہ',share:'نتیجہ شیئر کریں',estimateNote:'یہ صرف ایک تخمینہ ہے۔ نسل، جسمانی حالت اور پیمائش کی درستگی کے باعث اصل وزن مختلف ہو سکتا ہے۔',recent:'حالیہ',history:'حساب کی تاریخ',clear:'صاف کریں',noHistory:'آپ کے حالیہ حساب یہاں نظر آئیں گے۔',footerNote:'صرف تخمینہ کے لیے'}
-};
-function applyLanguage(){const t=translations[state.lang];document.documentElement.lang=state.lang;document.documentElement.dir=state.lang==='ur'?'rtl':'ltr';document.body.classList.toggle('rtl',state.lang==='ur');document.querySelectorAll('[data-i18n]').forEach(el=>el.innerHTML=t[el.dataset.i18n]||el.innerHTML);$('#languageToggle').textContent=state.lang==='en'?'اردو':'English'}
-function estimateWeight(animal,girth,length){/* The source repository contains no implemented calculation engine. Keep this estimator isolated so a verified business formula can replace it without touching UI/history. */const base=(girth*girth*length)/10840;const factors={cattle:1,buffalo:1.08,sheep:.22,goat:.20};return Math.max(1,base*(factors[animal]||1))}
-function getHistory(){try{return JSON.parse(localStorage.getItem(historyKey)||'[]')}catch{return []}}
-function saveHistory(item){const items=[item,...getHistory()].slice(0,10);localStorage.setItem(historyKey,JSON.stringify(items));renderHistory()}
-function renderHistory(){const list=$('#historyList'),items=getHistory();if(!items.length){list.innerHTML='<div class="empty-state" data-i18n="noHistory"></div>';applyLanguage();return}list.innerHTML=items.map(x=>`<div class="history-item"><div class="history-main"><strong>${escapeHtml(x.animal)}</strong><small>${x.girth} × ${x.length} in · ${escapeHtml(x.date)}</small></div><span class="history-weight">${x.weight} kg</span></div>`).join('')}
-function escapeHtml(v){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#039;','"':'&quot;'}[c]))}
-function animalName(v){return translations[state.lang][v]||v}
-$('#calculatorForm').addEventListener('submit',e=>{e.preventDefault();const animal=$('input[name="animal"]:checked').value,girth=Number($('#girth').value),length=Number($('#length').value),notice=$('#validation');if(!Number.isFinite(girth)||!Number.isFinite(length)||girth<=0||length<=0){notice.textContent=state.lang==='ur'?'براہ کرم درست پیمائش درج کریں۔':'Please enter valid measurements.';notice.hidden=false;return}notice.hidden=true;const weight=Number(estimateWeight(animal,girth,length).toFixed(1));$('#weightValue').textContent=weight;$('#animalLabel').textContent=animalName(animal);$('#measurementLabel').textContent=`${girth} × ${length} in`;$('#resultSection').hidden=false;$('#resultSection').scrollIntoView({behavior:'smooth',block:'start'});saveHistory({animal:animalName(animal),girth,length,weight,date:new Intl.DateTimeFormat(state.lang==='ur'?'ur-PK':'en-PK',{dateStyle:'medium',timeStyle:'short'}).format(new Date())})});
-document.querySelectorAll('.animal-option input').forEach(i=>i.addEventListener('change',()=>document.querySelectorAll('.animal-option').forEach(x=>x.classList.toggle('selected',x.querySelector('input').checked))));
-$('#clearHistory').addEventListener('click',()=>{localStorage.removeItem(historyKey);renderHistory()});
-$('#themeToggle').addEventListener('click',()=>{document.body.classList.toggle('dark');localStorage.setItem('plw-theme',document.body.classList.contains('dark')?'dark':'light')});
-$('#languageToggle').addEventListener('click',()=>{state.lang=state.lang==='en'?'ur':'en';localStorage.setItem('plw-lang',state.lang);applyLanguage();renderHistory()});
-$('#shareButton').addEventListener('click',async()=>{const text=`Pakistan Livestock Weight\n${$('#animalLabel').textContent}: ${$('#weightValue').textContent} kg\n${$('#measurementLabel').textContent}`;try{if(navigator.share)await navigator.share({title:'Pakistan Livestock Weight',text});else await navigator.clipboard.writeText(text)}catch{}});
-if(localStorage.getItem('plw-theme')==='dark')document.body.classList.add('dark');applyLanguage();renderHistory();if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+import { ANIMALS, MEASUREMENT_LIMITS, estimateWeight, validateMeasurements } from './estimator.js';
+import { clearHistory, readHistory, saveHistory, storageAvailable } from './storage.js';
+import { applyLanguage, translations } from './i18n.js';
+
+const $ = selector => document.querySelector(selector);
+const state = { lang: safelyRead('plw-lang') || 'en', lastResult: null };
+
+function safelyRead(key) { try { return localStorage.getItem(key); } catch { return null; } }
+function safelyWrite(key, value) { try { localStorage.setItem(key, value); return true; } catch { return false; } }
+function text(key, values = {}) { return Object.entries(values).reduce((value, [name, replacement]) => value.replace(`{${name}}`, replacement), translations[state.lang][key]); }
+function updateLanguage() { applyLanguage(state.lang); $('#languageToggle').textContent = state.lang === 'en' ? 'ط§ط±ط¯ظˆ' : 'English'; renderHistory(); }
+function formatDate(date) { try { return new Intl.DateTimeFormat(state.lang === 'ur' ? 'ur-PK' : 'en-PK', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(date)); } catch { return date; } }
+function selectedAnimal() { return $('input[name="animal"]:checked').value; }
+
+function showErrors(errors) {
+  for (const field of ['girth', 'length']) {
+    const input = $(`#${field}`), error = $(`#${field}Error`), code = errors[field];
+    const message = code ? text(code, MEASUREMENT_LIMITS[field]) : '';
+    error.textContent = message; input.setAttribute('aria-invalid', String(Boolean(code))); input.closest('.input-wrap').classList.toggle('has-error', Boolean(code));
+  }
+  const notice = $('#validation'); notice.textContent = Object.keys(errors).length ? text('formError') : ''; notice.hidden = !Object.keys(errors).length;
+}
+
+function createHistoryItem(item) {
+  const row = document.createElement('div'); row.className = 'history-item';
+  const main = document.createElement('div'); main.className = 'history-main';
+  const name = document.createElement('strong'); name.textContent = translations[state.lang][item.animal] || item.animal;
+  const details = document.createElement('small'); details.textContent = `${item.girth} أ— ${item.length} in آ· ${formatDate(item.date)}`;
+  const weight = document.createElement('span'); weight.className = 'history-weight'; weight.textContent = `${item.weight} kg`;
+  main.append(name, details); row.append(main, weight); return row;
+}
+function renderHistory() {
+  const list = $('#historyList'); list.replaceChildren(); const items = readHistory();
+  if (!items.length) { const empty = document.createElement('div'); empty.className = 'empty-state'; empty.textContent = text('noHistory'); list.append(empty); return; }
+  items.forEach(item => list.append(createHistoryItem(item)));
+}
+function showShareStatus(message) { const el = $('#shareStatus'); el.textContent = message; }
+function renderResult(result) {
+  state.lastResult = result; $('#weightValue').textContent = result.weight; $('#animalLabel').textContent = translations[state.lang][result.animal]; $('#measurementLabel').textContent = `${result.girth} أ— ${result.length} in`;
+  const section = $('#resultSection'); section.hidden = false; section.focus({ preventScroll: true }); section.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+}
+
+$('#calculatorForm').addEventListener('submit', event => {
+  event.preventDefault(); const values = { girth: $('#girth').value, length: $('#length').value }; const errors = validateMeasurements(values); showErrors(errors); if (Object.keys(errors).length) return;
+  const animal = selectedAnimal(), girth = Number(values.girth), length = Number(values.length), weight = Number(estimateWeight(animal, girth, length).toFixed(1));
+  const result = { animal, girth, length, weight, date: new Date().toISOString() }; renderResult(result); saveHistory(result); renderHistory();
+});
+['girth', 'length'].forEach(field => $(`#${field}`).addEventListener('input', () => showErrors(validateMeasurements({ girth: $('#girth').value, length: $('#length').value }))));
+document.querySelectorAll('.animal-option input').forEach(input => input.addEventListener('change', () => document.querySelectorAll('.animal-option').forEach(option => option.classList.toggle('selected', option.querySelector('input').checked))));
+$('#clearHistory').addEventListener('click', () => { clearHistory(); renderHistory(); showShareStatus(text('cleared')); });
+$('#themeToggle').addEventListener('click', () => { const dark = document.body.classList.toggle('dark'); safelyWrite('plw-theme', dark ? 'dark' : 'light'); });
+$('#languageToggle').addEventListener('click', () => { state.lang = state.lang === 'en' ? 'ur' : 'en'; safelyWrite('plw-lang', state.lang); updateLanguage(); if (state.lastResult) renderResult(state.lastResult); });
+$('#shareButton').addEventListener('click', async () => {
+  if (!state.lastResult) return; const r = state.lastResult; const shared = `Pakistan Livestock Weight\n${translations[state.lang][r.animal]}: ${r.weight} kg\n${r.girth} أ— ${r.length} in\n${text('formulaNote')}`;
+  try { if (navigator.share) { await navigator.share({ title: 'Pakistan Livestock Weight', text: shared }); showShareStatus(text('shared')); return; } if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(shared); showShareStatus(text('shared')); return; } throw new Error('No share method'); } catch { showShareStatus(text('shareFailed')); }
+});
+if (safelyRead('plw-theme') === 'dark') document.body.classList.add('dark');
+if (!['en', 'ur'].includes(state.lang)) state.lang = 'en'; updateLanguage();
+if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
+if (!storageAvailable()) console.warn('Local storage is unavailable; history and preferences will not persist.');
+export { renderResult, showErrors };
+

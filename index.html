@@ -3,66 +3,49 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#102a25">
-  <meta name="description" content="A premium livestock weight estimation tool for Pakistan. Estimate live weight from simple body measurements.">
-  <meta property="og:title" content="Pakistan Livestock Weight">
-  <meta property="og:description" content="A fast, field-friendly livestock weight estimation tool.">
-  <meta property="og:type" content="website">
-  <link rel="manifest" href="manifest.webmanifest">
-  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/app.css">
+  <meta name="theme-color" content="#123b32">
+  <meta name="description" content="A field-friendly livestock weight estimation tool for Pakistan.">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="./css/app.css">
   <title>Pakistan Livestock Weight</title>
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to calculator</a>
+  <a class="skip-link" href="#main" data-i18n="skip">Skip to calculator</a>
   <div class="app-shell">
-    <header class="topbar">
-      <a class="brand" href="#top" aria-label="Pakistan Livestock Weight home">
-        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5h12.5l2 2.4v5.6H6.5L4 15V9.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M7 9.5 8.5 6h6l2 3.5M7.5 17.5v1.5M16.5 17.5v1.5M19 13h1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="8.5" cy="13" r=".9" fill="currentColor"/></svg></span>
-        <span><strong>Pakistan Livestock</strong><small>Weight Estimator</small></span>
+    <header class="topbar" id="top">
+      <a class="brand" href="#top" aria-label="Pakistan Livestock Weight home" data-i18n-aria-label="homeLabel">
+        <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none"><path d="M4 9.5h12.5l2 2.4v5.6H6.5L4 15V9.5Z" stroke="currentColor" stroke-width="1.7"/><path d="M7 9.5 8.5 6h6l2 3.5M7.5 17.5v1.5M16.5 17.5v1.5M19 13h1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span>
+        <span><strong data-i18n="brand">Pakistan Livestock</strong><small data-i18n="brandSub">Weight Estimator</small></span>
       </a>
-      <div class="top-actions"><button class="icon-button" id="languageToggle" type="button" aria-label="Switch language">اردو</button><button class="icon-button theme-button" id="themeToggle" type="button" aria-label="Toggle dark mode">◐</button></div>
+      <div class="top-actions"><button class="icon-button" id="languageToggle" type="button" aria-label="Switch language" data-i18n-aria-label="languageLabel">ط§ط±ط¯ظˆ</button><button class="icon-button theme-button" id="themeToggle" type="button" aria-label="Toggle dark mode" data-i18n-aria-label="themeLabel"><span aria-hidden="true">â—گ</span></button></div>
     </header>
     <main id="main">
-      <section class="hero" id="top">
-        <div class="hero-copy">
-          <div class="eyebrow"><span></span><span data-i18n="eyebrow">FIELD TOOL · PAKISTAN</span></div>
-          <h1 data-i18n="headline">Know the animal.<br><em>Know the weight.</em></h1>
-          <p data-i18n="intro">A refined field calculator for estimating livestock live weight from body measurements.</p>
-        </div>
-        <div class="hero-note" aria-label="Field tool information">
-          <div class="hero-note-top"><span class="hero-note-label">FIELD NOTE</span><span class="hero-note-index">01</span></div>
-          <strong>Measure once.<br>Estimate with confidence.</strong>
-          <p>Designed for quick use in farms, markets and livestock yards across Pakistan.</p>
-          <div class="hero-rule"></div>
-          <div class="hero-meta"><span>04 species</span><span>02 measurements</span><span>Offline ready</span></div>
-        </div>
+      <section class="hero" aria-labelledby="pageTitle">
+        <div class="hero-copy"><div class="eyebrow"><span></span><span data-i18n="eyebrow">FIELD TOOL آ· PAKISTAN</span></div><h1 id="pageTitle" data-i18n-html="headline">Know the animal.<br><em>Know the weight.</em></h1><p data-i18n="intro">A refined field calculator for estimating livestock live weight from body measurements.</p></div>
+        <aside class="hero-note"><div class="hero-note-top"><span class="hero-note-label" data-i18n="fieldNote">FIELD NOTE</span><span class="hero-note-index">01</span></div><strong data-i18n-html="noteTitle">Measure once.<br>Estimate with care.</strong><p data-i18n="noteCopy">Designed for quick use in farms, markets and livestock yards across Pakistan.</p><div class="hero-rule"></div><div class="hero-meta"><span data-i18n="species">04 species</span><span data-i18n="measurements">02 measurements</span><span data-i18n="offline">Offline ready</span></div></aside>
       </section>
-      <section class="workspace" aria-label="Weight calculator">
-        <aside class="step-rail" aria-label="Calculator progress"><div class="step active"><b>01</b><span data-i18n="stepAnimal">Animal</span></div><div class="rail-line"></div><div class="step"><b>02</b><span data-i18n="stepMeasure">Measure</span></div><div class="rail-line"></div><div class="step"><b>03</b><span data-i18n="stepResult">Result</span></div></aside>
-        <div class="calculator-card">
-          <div class="card-head"><div><span class="section-kicker" data-i18n="estimate">LIVE WEIGHT ESTIMATE</span><h2 data-i18n="measureAnimal">Measure your animal</h2></div><span class="status-dot" title="Works offline"></span></div>
+      <section class="workspace" aria-label="Weight calculator" data-i18n-aria-label="calculatorLabel">
+        <aside class="step-rail" aria-label="Calculator progress" data-i18n-aria-label="progressLabel"><div class="step active"><b>01</b><span data-i18n="stepAnimal">Animal</span></div><div class="rail-line"></div><div class="step"><b>02</b><span data-i18n="stepMeasure">Measure</span></div><div class="rail-line"></div><div class="step"><b>03</b><span data-i18n="stepResult">Result</span></div></aside>
+        <div class="calculator-card"><div class="card-head"><div><span class="section-kicker" data-i18n="estimate">LIVE WEIGHT ESTIMATE</span><h2 data-i18n="measureAnimal">Measure your animal</h2></div><span class="status-dot" title="Works offline" aria-hidden="true"></span></div>
           <form id="calculatorForm" novalidate>
-            <fieldset class="animal-fieldset"><legend data-i18n="animalType">Animal type</legend><div class="animal-grid">
+            <fieldset class="animal-fieldset"><legend data-i18n="animalType">Animal type</legend><div class="animal-grid" role="radiogroup" aria-label="Animal type" data-i18n-aria-label="animalType">
               <label class="animal-option selected"><input type="radio" name="animal" value="cattle" checked><span class="animal-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M7 12.5 4.5 9M25 12.5 27.5 9M9 11c0-3 3.2-5 7-5s7 2 7 5v8c0 4-3.1 7-7 7s-7-3-7-7v-8Z"/><path d="M12 16h.1M20 16h.1M14 21c1.2 1 2.8 1 4 0"/></svg></span><span data-i18n="cattle">Cattle</span></label>
               <label class="animal-option"><input type="radio" name="animal" value="buffalo"><span class="animal-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 12c-4-5-5-5-6-4M23 12c4-5 5-5 6-4M8 12c1-4 4-6 8-6s7 2 8 6v7c0 5-3.5 8-8 8s-8-3-8-8v-7Z"/><path d="M12 16h.1M20 16h.1M14 21c1.2 1 2.8 1 4 0"/></svg></span><span data-i18n="buffalo">Buffalo</span></label>
               <label class="animal-option"><input type="radio" name="animal" value="sheep"><span class="animal-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M8 19c-2-1-2-5 1-6-1-3 3-5 5-3 2-3 7-1 7 2 3-1 5 3 3 5 2 2 0 6-3 5-2 3-7 2-8 0-3 1-5-1-5-3Z"/><path d="M10 22v4M22 22v4M25 19h3"/></svg></span><span data-i18n="sheep">Sheep</span></label>
               <label class="animal-option"><input type="radio" name="animal" value="goat"><span class="animal-icon" aria-hidden="true"><svg viewBox="0 0 32 32"><path d="M9 12 7 6l5 3M23 12l2-6-5 3M9 12c1-4 4-6 7-6s6 2 7 6v7c0 5-3 8-7 8s-7-3-7-8v-7Z"/><path d="M12 16h.1M20 16h.1M14 21c1.2 1 2.8 1 4 0"/></svg></span><span data-i18n="goat">Goat</span></label>
             </div></fieldset>
             <div class="measure-grid">
-              <label class="measure-field"><span data-i18n="heartGirth">Heart girth</span><div class="input-wrap"><input id="girth" inputmode="decimal" type="number" min="20" max="120" step="0.1" required placeholder="e.g. 72"><span>in</span></div><small data-i18n="girthHelp">Measure around the chest, just behind the front legs.</small></label>
-              <label class="measure-field"><span data-i18n="bodyLength">Body length</span><div class="input-wrap"><input id="length" inputmode="decimal" type="number" min="20" max="100" step="0.1" required placeholder="e.g. 68"><span>in</span></div><small data-i18n="lengthHelp">Shoulder point to the base of the tail.</small></label>
+              <div class="measure-field"><label for="girth" data-i18n="heartGirth">Heart girth</label><div class="input-wrap"><input id="girth" name="girth" inputmode="decimal" type="number" min="20" max="120" step="0.1" required aria-describedby="girthHelp girthError" placeholder="e.g. 72"><span>in</span></div><small id="girthHelp" data-i18n="girthHelp">Measure around the chest, just behind the front legs.</small><small class="field-error" id="girthError"></small></div>
+              <div class="measure-field"><label for="length" data-i18n="bodyLength">Body length</label><div class="input-wrap"><input id="length" name="length" inputmode="decimal" type="number" min="20" max="100" step="0.1" required aria-describedby="lengthHelp lengthError" placeholder="e.g. 68"><span>in</span></div><small id="lengthHelp" data-i18n="lengthHelp">Shoulder point to the base of the tail.</small><small class="field-error" id="lengthError"></small></div>
             </div>
-            <div class="notice" id="validation" role="alert" hidden></div>
-            <button class="primary-button" type="submit"><span data-i18n="calculate">Calculate estimated weight</span><span aria-hidden="true">→</span></button>
+            <div class="notice" id="validation" role="alert" hidden></div><button class="primary-button" type="submit"><span data-i18n="calculate">Calculate estimated weight</span><span aria-hidden="true">â†’</span></button>
           </form>
         </div>
       </section>
-      <section class="result-section" id="resultSection" hidden aria-live="polite"><div class="result-card"><div class="result-top"><span class="section-kicker" data-i18n="resultKicker">ESTIMATED LIVE WEIGHT</span><button class="text-button" id="shareButton" type="button" data-i18n="share">Share result</button></div><div class="weight-number"><span id="weightValue">—</span><small>kg</small></div><div class="result-meta"><span id="animalLabel">Cattle</span><span>•</span><span id="measurementLabel">72 × 68 in</span></div><div class="result-note" data-i18n="estimateNote">This is an estimate. Actual live weight can vary with breed, condition and measurement accuracy.</div></div></section>
-      <section class="history-section" id="historySection"><div class="section-heading"><div><span class="section-kicker" data-i18n="recent">RECENT</span><h2 data-i18n="history">Calculation history</h2></div><button class="text-button" id="clearHistory" type="button" data-i18n="clear">Clear</button></div><div id="historyList" class="history-list"><div class="empty-state" data-i18n="noHistory">Your recent calculations will appear here.</div></div></section>
-    </main>
-    <footer><span>© 2026 Khyber Traders</span><span data-i18n="footerNote">For estimation purposes only</span></footer>
-  </div>
-  <script type="module" src="js/app.js"></script>
-</body>
-</html>
+      <section class="result-section" id="resultSection" hidden aria-live="polite" tabindex="-1"><div class="result-card"><div class="result-top"><span class="section-kicker" data-i18n="resultKicker">ESTIMATED LIVE WEIGHT</span><button class="text-button" id="shareButton" type="button" data-i18n="share">Share result</button></div><div class="weight-number"><span id="weightValue">â€”</span><small>kg</small></div><div class="result-meta"><span id="animalLabel">Cattle</span><span aria-hidden="true">â€¢</span><span id="measurementLabel">72 أ— 68 in</span></div><div class="result-note" data-i18n="formulaNote">Provisional estimate â€” formula pending verification. Actual live weight can vary.</div><div class="share-status" id="shareStatus" role="status" aria-live="polite"></div></div></section>
+      <section class="history-section" id="historySection"><div class="section-heading"><div><span class="section-kicker" data-i18n="recent">RECENT</span><h2 data-i18n="history">Calculation history</h2></div><button class="text-button" id="clearHistory" type="button" data-i18n="clear">Clear</button></div><div id="historyList" class="history-list"></div></section>
+    </main><footer><span>آ© 2026 Khyber Traders</span><span data-i18n="footerNote">For estimation purposes only</span></footer>
+  </div><script type="module" src="./js/app.js"></script>
+</body></html>
+

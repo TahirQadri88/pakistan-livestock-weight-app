@@ -19,6 +19,18 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
+      - name: Wire final QA layer
+        run: |
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          if 'css/final-fixes.css' not in s:
+              s = s.replace('</head>', '  <link rel="stylesheet" href="./css/final-fixes.css">\n</head>')
+          if 'js/final-fixes.js' not in s:
+              s = s.replace('</body>', '  <script src="./js/final-fixes.js"></script>\n</body>')
+          p.write_text(s, encoding='utf-8')
+          PY
       - uses: actions/upload-pages-artifact@v3
         with:
           path: .

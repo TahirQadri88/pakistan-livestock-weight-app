@@ -19,16 +19,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: actions/configure-pages@v5
-      - name: Wire production UI
+      - name: Wire production UI and QA fixes
         run: |
           python3 - <<'PY'
           from pathlib import Path
           p=Path('index.html')
           s=p.read_text(encoding='utf-8')
-          for css in ['./css/production-ui.css']:
+          for css in ['./css/production-ui.css','./css/qa-share-fix.css']:
               tag=f'<link rel="stylesheet" href="{css}">'
               if tag not in s: s=s.replace('</head>',f'  {tag}\n</head>')
-          for js in ['./js/production-ui.js']:
+          for js in ['./js/production-ui.js','./js/qa-share-fix.js']:
               tag=f'<script src="{js}"></script>'
               if tag not in s: s=s.replace('</body>',f'  {tag}\n</body>')
           p.write_text(s,encoding='utf-8')

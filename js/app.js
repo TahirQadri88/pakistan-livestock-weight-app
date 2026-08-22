@@ -1,97 +1,70 @@
-import { MEASUREMENT_LIMITS, estimateWeight, validateMeasurements } from './estimator.js';
-import { clearHistory, readHistory, saveHistory, storageAvailable } from './storage.js';
-import { applyLanguage, translations } from './i18n.js';
+const $ = s => document.querySelector(s);
+const $$ = s => [...document.querySelectorAll(s)];
 
-const $ = selector => document.querySelector(selector);
-const state = { lang: safelyRead('plw-lang') || 'en', lastResult: null };
+const profiles = {
+  cattle: {name:'Cattle',ur:'گائے / بیل',breeds:[['general','General / Desi','جنرل / دیسی',10840],['sahiwal','Sahiwal','ساہیوال',10840],['cholistani','Cholistani','چولستانی',10840],['red-sindhi','Red Sindhi','ریڈ سندھی',10840],['crossbred','Crossbred','کراس بریڈ',10840]]},
+  buffalo: {name:'Buffalo',ur:'بھینس',breeds:[['nili-ravi','Nili-Ravi / Kundi','نیلی راوی / کنڈی (بھاری نسل)',10400],['general','General / Desi','جنرل / دیسی (معیاری)',10840]]},
+  sheep: {name:'Sheep',ur:'بھیڑ',breeds:[['kajli','Kajli','کاجلی',10840],['lohi','Lohi','لوہی',10840],['thalli','Thalli','تھلی',10840],['general','General / Desi','جنرل / دیسی',10840]]},
+  goat: {name:'Goat',ur:'بکری',breeds:[['beetal','Beetal','بیٹل',10840],['kamori','Kamori','کاموری',10840],['teddy','Teddy','ٹیڈی',10840],['general','General / Desi','جنرل / دیسی',10840]]}
+};
+const animalSvgs = {
+  cattle:'<svg viewBox="0 0 48 48"><path d="M11 20c0-6 5-10 13-10s13 4 13 10v8c0 7-5 11-13 11s-13-4-13-11v-8Z"/><path d="M14 18 9 12M34 18l5-6M18 24h.1M30 24h.1M21 30c2 1.6 4 1.6 6 0M15 39v4M33 39v4"/></svg>',
+  buffalo:'<svg viewBox="0 0 48 48"><path d="M13 19c-5-7-7-7-9-6M35 19c5-7 7-7 9-6M11 20c1-6 6-10 13-10s12 4 13 10v8c0 7-5 11-13 11s-13-4-13-11v-8Z"/><path d="M18 24h.1M30 24h.1M21 30c2 1.6 4 1.6 6 0M15 39v4M33 39v4"/></svg>',
+  sheep:'<svg viewBox="0 0 48 48"><path d="M10 31c-4-2-3-8 1-10-2-5 5-8 9-5 3-5 11-2 11 3 5-2 9 4 5 8 3 5-3 9-7 7-3 5-11 3-12-1-4 2-8 0-7-2Z"/><path d="M14 34v7M33 34v7M36 30h5"/></svg>',
+  goat:'<svg viewBox="0 0 48 48"><path d="M14 18 10 9l8 5M34 18l4-9-8 5M12 19c1-6 6-10 12-10s11 4 12 10v9c0 7-5 11-12 11s-12-4-12-11v-9Z"/><path d="M18 24h.1M30 24h.1M21 30c2 1.6 4 1.6 6 0M16 39v4M32 39v4"/></svg>'
+};
 
-function safelyRead(key) { try { return localStorage.getItem(key); } catch { return null; } }
-function safelyWrite(key, value) { try { localStorage.setItem(key, value); return true; } catch { return false; } }
-function text(key, values = {}) { return Object.entries(values).reduce((value, [name, replacement]) => value.replace(`{${name}}`, replacement), translations[state.lang][key]); }
-function updateLanguage() {
-  applyLanguage(state.lang);
-  $('#languageToggle').textContent = state.lang === 'en' ? 'اردو' : 'English';
-  renderHistory();
+const state = {step:1, animal:null, breed:null, profile:read('plw-profile')||null, result:null, lang:read('plw-lang')||'en'};
+function read(k){try{return JSON.parse(localStorage.getItem(k));}catch{return null;}}
+function write(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch{}}
+function remove(k){try{localStorage.removeItem(k);}catch{}}
+function history(){return read('plw-history')||[];}
+function saveHistory(item){const list=history().filter(x=>x.id!==item.id);list.unshift(item);write('plw-history',list.slice(0,30));}
+function setStep(n){state.step=n;['step1','step2','breedStep','step3','step4'].forEach((id,i)=>{const el=$('#'+id);if(el)el.hidden=i!==n-1;});window.scrollTo({top:0,behavior:'smooth'});}
+function animalName(key){const p=profiles[key];return p?`${p.name} / ${p.ur}`:key;}
+function selectedProfile(){return profiles[state.animal]?.breeds.find(b=>b[0]===state.breed);}
+
+function renderAnimals(){
+  const grid=$('#animalGrid');grid.replaceChildren();Object.entries(profiles).forEach(([key,p],i)=>{
+    const card=document.createElement('button');card.type='button';card.className='choice-card'+(state.animal===key?' selected':'');card.innerHTML=`<span class="animal-icon" aria-hidden="true">${animalSvgs[key]}</span><strong>${p.name}</strong><small>${p.ur}</small><span class="number">0${i+1}</span>`;card.addEventListener('click',()=>{state.animal=key;state.breed=null;renderAnimals();renderBreeds();setStep(3);});grid.append(card);
+  });
 }
-function formatDate(date) {
-  try { return new Intl.DateTimeFormat(state.lang === 'ur' ? 'ur-PK' : 'en-PK', { dateStyle: 'medium', timeStyle: 'short' }).format(new Date(date)); }
-  catch { return date; }
+function renderBreeds(){
+  const grid=$('#breedGrid');grid.replaceChildren();if(!state.animal)return;
+  const p=profiles[state.animal];$('#breedTitle').innerHTML=`Select Breed Profile <span>/ ${p.ur}</span>`;$('#breedIntro').textContent='Choose the closest available profile for better estimation.';
+  p.breeds.forEach(b=>{const card=document.createElement('button');card.type='button';card.className='breed-card'+(state.breed===b[0]?' selected':'');card.innerHTML=`<strong>${b[1]}</strong><span>${b[2]}</span>`;card.addEventListener('click',()=>{state.breed=b[0];updateContext();setStep(4);});grid.append(card);});
 }
-function selectedAnimal() { return $('input[name="animal"]:checked')?.value || 'cattle'; }
-
-function showErrors(errors) {
-  for (const field of ['girth', 'length']) {
-    const input = $(`#${field}`), error = $(`#${field}Error`), code = errors[field];
-    const message = code ? text(code, MEASUREMENT_LIMITS[field]) : '';
-    error.textContent = message;
-    input.setAttribute('aria-invalid', String(Boolean(code)));
-    input.closest('.input-wrap').classList.toggle('has-error', Boolean(code));
-  }
-  const notice = $('#validation');
-  notice.textContent = Object.keys(errors).length ? text('formError') : '';
-  notice.hidden = !Object.keys(errors).length;
+function updateContext(){const p=profiles[state.animal],b=selectedProfile();$('#contextStrip').innerHTML=`<span class="context-chip">${p.name}</span><span class="context-chip">${b?b[1]:''}</span><span class="context-chip">G² × L ÷ D</span>`;}
+function profileForm(){if(state.profile){$('#farmName').value=state.profile.farm||'';$('#mobile').value=state.profile.mobile||'';$('#owner').value=state.profile.owner||'';$('#city').value=state.profile.city||'';}}
+function showHistory(){const panel=$('#historyPanel');panel.hidden=!panel.hidden;renderHistory();if(!panel.hidden)panel.scrollIntoView({behavior:'smooth'});}
+function renderHistory(){const list=$('#historyList');list.replaceChildren();const items=history();if(!items.length){const e=document.createElement('div');e.className='empty-history';e.textContent='No calculations saved yet. Your recent estimates will appear here.';list.append(e);return;}items.forEach(item=>{const row=document.createElement('div');row.className='history-row';const main=document.createElement('div');const title=document.createElement('strong');title.textContent=`${item.animal} · ${item.breed}`;const meta=document.createElement('small');meta.textContent=`${item.tag||'No Tag'} · G ${item.girth} cm × L ${item.length} cm · ${new Date(item.date).toLocaleString()}`;main.append(title,meta);const w=document.createElement('span');w.className='weight';w.textContent=`${item.weight.toFixed(2)} KG`;row.append(main,w);row.addEventListener('click',()=>{state.result=item;renderResult(item);setStep(5);});list.append(row);});}
+function calculate(g,l,d){return (g*g*l)/d;}
+function renderResult(r){
+  const meat=r.weight*.5, maund=r.weight/40;
+  $('#resultCard').innerHTML=`<div class="result-top"><div class="title">Pakistan Livestock Weight Calculator</div><small>Results calculated using the G² × L ÷ D formula.</small></div><div class="result-info"><strong>Farm:</strong> ${esc(r.profile.farm)} &nbsp; | &nbsp; <strong>Mobile:</strong> ${esc(r.profile.mobile)}<br><strong>Owner:</strong> ${esc(r.profile.owner)} &nbsp; | &nbsp; <strong>City:</strong> ${esc(r.profile.city)}<br><strong>Animal:</strong> ${esc(r.animal)} / ${esc(r.breed)} &nbsp; | &nbsp; <strong>Tag ID:</strong> ${esc(r.tag||'No Tag')}<br><strong>Date:</strong> ${new Date(r.date).toLocaleString()}</div><table class="result-table"><thead><tr><th>Parameter</th><th>Result</th></tr></thead><tbody><tr><td>Breed Profile</td><td>${esc(r.breed)}</td></tr><tr><td>Girth (G) × Length (L)</td><td>${r.girth} cm × ${r.length} cm</td></tr><tr><td>Live Weight</td><td class="big">${r.weight.toFixed(2)} KG</td></tr><tr><td>Trade Weight</td><td>${maund.toFixed(2)} Maunds</td></tr><tr><td>Meat Estimate (~50%)</td><td>~${meat.toFixed(2)} KG</td></tr></tbody></table><div class="result-note">Calculated using the selected ${esc(r.breed)} density profile (D = ${r.density}).</div><div class="result-credit">Khyber Traders · AnimalHealth.PK · For estimation purposes only</div>`;
 }
+function esc(v){const d=document.createElement('div');d.textContent=v??'';return d.innerHTML;}
+function resultText(r){return `*Pakistan Livestock Weight Calculation Result*\n(Khyber Traders - AnimalHealth.PK)\n\n*Farm Details:*\nFarm Name: ${r.profile.farm}\nMobile Number: ${r.profile.mobile}\nOwner: ${r.profile.owner}\nCity: ${r.profile.city}\nTag ID: ${r.tag||'No Tag'}\nDate: ${new Date(r.date).toLocaleString()}\n---\n*Measurement:*\nAnimal: ${r.animal}\nBreed Profile: ${r.breed}\nGirth (G): ${r.girth} cm\nLength (L): ${r.length} cm\n---\n*Calculated Weights:*\nLIVE WEIGHT: ${r.weight.toFixed(2)} KG\nTRADE WEIGHT: ${(r.weight/40).toFixed(2)} Maunds\nMEAT ESTIMATE (50%): ~${(r.weight*.5).toFixed(2)} KG\n\nCalculated using the selected density profile (D=${r.density}).\n#LiveWeightCalculator #KhyberTraders #AnimalHealthPK`;}
+function download(name,content,type){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([content],{type}));a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
+function exportCsv(){const r=state.result;const rows=[['Field','Value'],['Farm',r.profile.farm],['Mobile',r.profile.mobile],['Owner',r.profile.owner],['City',r.profile.city],['Animal',r.animal],['Breed',r.breed],['Tag ID',r.tag||'No Tag'],['Girth CM',r.girth],['Length CM',r.length],['Live Weight KG',r.weight.toFixed(2)],['Trade Weight Maunds',(r.weight/40).toFixed(2)],['Meat Estimate KG',(r.weight*.5).toFixed(2)]];download('livestock-weight-result.csv',rows.map(x=>x.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n'),'text/csv');}
+function exportPdf(){window.print();}
+function exportImage(){const r=state.result;const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1350"><rect width="1080" height="1350" fill="#ffffff"/><rect x="30" y="30" width="1020" height="170" rx="28" fill="#087a5a"/><text x="70" y="90" fill="white" font-size="36" font-family="Arial" font-weight="700">Pakistan Livestock Weight Calculator</text><text x="70" y="135" fill="#dcece5" font-size="20" font-family="Arial">Khyber Traders · AnimalHealth.PK</text><rect x="50" y="235" width="980" height="820" rx="24" fill="#f7faf8" stroke="#dfe8e2"/><text x="80" y="300" font-size="28" font-family="Arial" font-weight="700">CALCULATION RESULT</text><text x="80" y="370" font-size="22" font-family="Arial">Farm: ${esc(r.profile.farm)}</text><text x="80" y="410" font-size="22" font-family="Arial">Animal: ${esc(r.animal)} · ${esc(r.breed)}</text><text x="80" y="450" font-size="22" font-family="Arial">Tag ID: ${esc(r.tag||'No Tag')}</text><text x="80" y="520" font-size="22" font-family="Arial">Girth: ${r.girth} cm</text><text x="80" y="560" font-size="22" font-family="Arial">Length: ${r.length} cm</text><text x="80" y="680" font-size="30" font-family="Arial" font-weight="700">LIVE WEIGHT</text><text x="80" y="755" fill="#087a5a" font-size="70" font-family="Arial" font-weight="800">${r.weight.toFixed(2)} KG</text><text x="80" y="825" font-size="24" font-family="Arial">Trade Weight: ${(r.weight/40).toFixed(2)} Maunds</text><text x="80" y="865" font-size="24" font-family="Arial">Meat Estimate (~50%): ~${(r.weight*.5).toFixed(2)} KG</text><text x="80" y="990" fill="#4d6fe8" font-size="19" font-family="Arial">Calculated using G² × L ÷ D profile formula.</text><text x="80" y="1025" fill="#63716b" font-size="16" font-family="Arial">For estimation purposes only.</text></svg>`;const blob=new Blob([svg],{type:'image/svg+xml'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='livestock-weight-result.svg';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);}
 
-function createHistoryItem(item) {
-  const row = document.createElement('div'); row.className = 'history-item';
-  const main = document.createElement('div'); main.className = 'history-main';
-  const name = document.createElement('strong'); name.textContent = translations[state.lang][item.animal] || item.animal;
-  const details = document.createElement('small'); details.textContent = `${item.girth} × ${item.length} in · ${formatDate(item.date)}`;
-  const weight = document.createElement('span'); weight.className = 'history-weight'; weight.textContent = `${item.weight} kg`;
-  main.append(name, details); row.append(main, weight); return row;
-}
-function renderHistory() {
-  const list = $('#historyList'); list.replaceChildren(); const items = readHistory();
-  if (!items.length) { const empty = document.createElement('div'); empty.className = 'empty-state'; empty.textContent = text('noHistory'); list.append(empty); return; }
-  items.forEach(item => list.append(createHistoryItem(item)));
-}
-function showShareStatus(message) { $('#shareStatus').textContent = message; }
-function renderResult(result) {
-  state.lastResult = result;
-  $('#weightValue').textContent = result.weight;
-  $('#animalLabel').textContent = translations[state.lang][result.animal];
-  $('#measurementLabel').textContent = `${result.girth} × ${result.length} in`;
-  showShareStatus('');
-  const section = $('#resultSection');
-  section.hidden = false;
-  section.focus({ preventScroll: true });
-  section.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-}
+function escProfileInputs(){return {farm:$('#farmName').value.trim(),mobile:$('#mobile').value.trim(),owner:$('#owner').value.trim(),city:$('#city').value.trim()};}
+$('#profileForm').addEventListener('submit',e=>{e.preventDefault();const p=escProfileInputs();if(Object.values(p).some(v=>!v)){alert('Please complete all farm details. / براہ کرم تمام معلومات مکمل کریں۔');return;}state.profile=p;write('plw-profile',p);renderAnimals();setStep(2);});
+$('#clearProfile').addEventListener('click',()=>{if(confirm('Clear saved profile and history? / تمام محفوظ ڈیٹا صاف کریں؟')){remove('plw-profile');remove('plw-history');state.profile=null;renderHistory();profileForm();}});
+$('#backProfile').addEventListener('click',()=>setStep(1));
+$('#backAnimal').addEventListener('click',()=>setStep(2));
+$('#backBreed').addEventListener('click',()=>setStep(3));
+$('#backMeasure').addEventListener('click',()=>setStep(4));
+$('#newCalc').addEventListener('click',()=>{state.animal=null;state.breed=null;state.result=null;$('#measureForm').reset();renderAnimals();setStep(2);});
+$('#historyBtn').addEventListener('click',showHistory);
+$('#clearHistory').addEventListener('click',()=>{remove('plw-history');renderHistory();});
+$('#langBtn').addEventListener('click',()=>{state.lang=state.lang==='en'?'ur':'en';write('plw-lang',state.lang);document.body.classList.toggle('rtl',state.lang==='ur');document.documentElement.lang=state.lang;document.documentElement.dir=state.lang==='ur'?'rtl':'ltr';$('#langBtn').textContent=state.lang==='ur'?'English':'اردو';});
+$('#themeBtn').addEventListener('click',()=>{document.body.classList.toggle('dark');write('plw-theme',document.body.classList.contains('dark')?'dark':'light');});
+$('#measureForm').addEventListener('submit',e=>{e.preventDefault();const g=Number($('#girth').value),l=Number($('#length').value),p=selectedProfile();const err=[];if(!Number.isFinite(g)||g<40||g>300)err.push('Heart Girth must be between 40 and 300 cm.');if(!Number.isFinite(l)||l<30||l>300)err.push('Body Length must be between 30 and 300 cm.');$('#measureError').hidden=!err.length;$('#measureError').textContent=err.join(' ');if(err.length)return;const weight=calculate(g,l,p[3]);state.result={id:crypto.randomUUID?crypto.randomUUID():String(Date.now()),profile:state.profile,animal:profiles[state.animal].name,breed:p[1],density:p[3],tag:$('#tagId').value.trim(),girth:g,length:l,weight,date:new Date().toISOString()};saveHistory(state.result);renderResult(state.result);setStep(5);});
+$('#whatsappBtn').addEventListener('click',()=>{if(!state.result)return;window.open('https://wa.me/?text='+encodeURIComponent(resultText(state.result)),'_blank','noopener');});
+$('#csvBtn').addEventListener('click',exportCsv);$('#pdfBtn').addEventListener('click',exportPdf);$('#imageBtn').addEventListener('click',exportImage);
 
-$('#calculatorForm').addEventListener('submit', event => {
-  event.preventDefault();
-  const values = { girth: $('#girth').value, length: $('#length').value };
-  const errors = validateMeasurements(values);
-  showErrors(errors);
-  if (Object.keys(errors).length) return;
-  const animal = selectedAnimal();
-  const girth = Number(values.girth), length = Number(values.length);
-  const weight = Number(estimateWeight(animal, girth, length).toFixed(1));
-  const result = { animal, girth, length, weight, date: new Date().toISOString() };
-  renderResult(result); saveHistory(result); renderHistory();
-});
-
-['girth', 'length'].forEach(field => $(`#${field}`).addEventListener('input', () => showErrors(validateMeasurements({ girth: $('#girth').value, length: $('#length').value }))));
-document.querySelectorAll('.animal-option input').forEach(input => input.addEventListener('change', () => document.querySelectorAll('.animal-option').forEach(option => option.classList.toggle('selected', option.querySelector('input').checked))));
-$('#clearHistory').addEventListener('click', () => { clearHistory(); renderHistory(); showShareStatus(text('cleared')); });
-$('#themeToggle').addEventListener('click', () => { const dark = document.body.classList.toggle('dark'); safelyWrite('plw-theme', dark ? 'dark' : 'light'); });
-$('#languageToggle').addEventListener('click', () => { state.lang = state.lang === 'en' ? 'ur' : 'en'; safelyWrite('plw-lang', state.lang); updateLanguage(); if (state.lastResult) renderResult(state.lastResult); });
-$('#shareButton').addEventListener('click', async () => {
-  if (!state.lastResult) return;
-  const r = state.lastResult;
-  const shared = `Pakistan Livestock Weight\n${translations[state.lang][r.animal]}: ${r.weight} kg\n${r.girth} × ${r.length} in\n${text('formulaNote')}`;
-  try {
-    if (navigator.share) { await navigator.share({ title: 'Pakistan Livestock Weight', text: shared }); showShareStatus(text('shared')); return; }
-    if (navigator.clipboard?.writeText) { await navigator.clipboard.writeText(shared); showShareStatus(text('shared')); return; }
-    throw new Error('No share method');
-  } catch (error) {
-    if (error?.name !== 'AbortError') showShareStatus(text('shareFailed'));
-  }
-});
-
-if (safelyRead('plw-theme') === 'dark') document.body.classList.add('dark');
-if (!['en', 'ur'].includes(state.lang)) state.lang = 'en';
-updateLanguage();
-if ('serviceWorker' in navigator) window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(() => {}));
-if (!storageAvailable()) console.warn('Local storage is unavailable; history and preferences will not persist.');
-export { renderResult, showErrors };
+if(read('plw-theme')==='dark')document.body.classList.add('dark');document.body.classList.toggle('rtl',state.lang==='ur');document.documentElement.lang=state.lang;document.documentElement.dir=state.lang==='ur'?'rtl':'ltr';$('#langBtn').textContent=state.lang==='ur'?'English':'اردو';profileForm();renderAnimals();renderHistory();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));

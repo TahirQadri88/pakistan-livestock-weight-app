@@ -1,16 +1,80 @@
 (() => {
-  const $=s=>document.querySelector(s);
-  const getResult=()=>{try{return (JSON.parse(localStorage.getItem('plw-history-v2'))||[])[0]||null}catch{return null}};
-  const resultText=()=>{const r=getResult();if(!r)return '';const date=new Date(r.date).toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});return ['*Pakistan Livestock Weight Calculation Result*','(Khyber Traders - AnimalHealth.PK)','', '*Farm Details:*',`Farm Name: ${r.profile?.farm||''}`,`Mobile Number: ${r.profile?.mobile||''}`,`Owner: ${r.profile?.owner||''}`,`City: ${r.profile?.city||''}`,`Tag ID: ${r.tag||'No Tag'}`,`Date: ${date}`,'---','*Measurement:*',`Animal: ${r.animal} (${r.breed})`,`Girth (G): ${r.girth} cm`,`Length (L): ${r.length} cm`,'---','*Calculated Weights:*',`LIVE WEIGHT: ${Number(r.weight).toFixed(2)} KG`,`TRADE WEIGHT: ${(Number(r.weight)/40).toFixed(2)} Maunds`,`MEAT ESTIMATE (50%): ~${(Number(r.weight)*.5).toFixed(2)} KG`,'',`Confidence Note: Calculated using ${r.breed} density profile (D=${r.density}).`,'','#LiveWeightCalculator #KhyberTraders #AnimalHealthPK'].join('\n')};
-  const toast=msg=>{let n=$('#qaToast');if(!n){n=document.createElement('div');n.id='qaToast';document.body.append(n)}n.textContent=msg;n.classList.add('show');clearTimeout(n._t);n._t=setTimeout(()=>n.classList.remove('show'),2600)};
-  const whatsapp=()=>{const t=resultText();if(!t)return toast('Calculate a result first.');const u='https://wa.me/?text='+encodeURIComponent(t);const w=window.open(u,'_blank','noopener,noreferrer');if(!w)window.location.href=u};
-  const share=async()=>{const t=resultText();if(!t)return toast('Calculate a result first.');if(navigator.share){try{await navigator.share({title:'Pakistan Livestock Weight Calculation Result',text:t});return}catch(e){if(e?.name==='AbortError')return}}try{await navigator.clipboard.writeText(t);toast('Result copied. Paste it into WhatsApp or any app.')}catch{whatsapp()}};
-  const csv=()=>{const r=getResult();if(!r)return toast('Calculate a result first.');const rows=[['Field','Value'],['Farm',r.profile?.farm||''],['Mobile',r.profile?.mobile||''],['Owner',r.profile?.owner||''],['City',r.profile?.city||''],['Tag ID',r.tag||'No Tag'],['Date',new Date(r.date).toISOString()],['Animal',r.animal],['Breed',r.breed],['Divisor',r.density],['Girth CM',r.girth],['Length CM',r.length],['Live Weight KG',Number(r.weight).toFixed(2)],['Trade Weight Maunds',(Number(r.weight)/40).toFixed(2)],['Meat Estimate KG',(Number(r.weight)*.5).toFixed(2)]];const body=rows.map(row=>row.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');const a=document.createElement('a'),u=URL.createObjectURL(new Blob([body],{type:'text/csv;charset=utf-8'}));a.href=u;a.download='livestock-weight-result.csv';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);toast('CSV exported.')};
-  const pdf=()=>{if(!getResult())return toast('Calculate a result first.');window.print()};
-  const image=()=>{const r=getResult();if(!r)return toast('Calculate a result first.');const lines=['Pakistan Livestock Weight Calculation Result','(Khyber Traders - AnimalHealth.PK)','',`Farm: ${r.profile?.farm||''}`,`Animal: ${r.animal} (${r.breed})`,`Tag ID: ${r.tag||'No Tag'}`,`Girth: ${r.girth} cm · Length: ${r.length} cm`,`LIVE WEIGHT: ${Number(r.weight).toFixed(2)} KG`,`TRADE WEIGHT: ${(Number(r.weight)/40).toFixed(2)} Maunds`,`MEAT ESTIMATE: ~${(Number(r.weight)*.5).toFixed(2)} KG`];const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');const W=1080,H=760;const body=lines.map((l,i)=>`<text x="72" y="${130+i*52}" font-family="Arial,sans-serif" font-size="${i===0?34:24}" font-weight="${i===0?700:400}" fill="${i===0?'#ffffff':'#12352a'}">${esc(l)}</text>`).join('');const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><rect width="100%" height="100%" fill="#f7f4ec"/><rect x="40" y="40" width="1000" height="95" rx="22" fill="#0b5a43"/>${body}</svg>`;const u=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'})),im=new Image();im.onload=()=>{const cv=document.createElement('canvas');cv.width=W*2;cv.height=H*2;const x=cv.getContext('2d');x.scale(2,2);x.drawImage(im,0,0);cv.toBlob(b=>{const a=document.createElement('a'),v=URL.createObjectURL(b);a.href=v;a.download='livestock-weight-result.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(v),1000);URL.revokeObjectURL(u);toast('Image exported.')},'image/png')};im.onerror=()=>{URL.revokeObjectURL(u);toast('Image export failed. Use PDF or Share Result.')};im.src=u};
-  const art={cattle:'<svg viewBox="0 0 120 90" aria-hidden="true"><path fill="#6b513d" d="M18 54c2-18 15-29 35-29h20c13 0 25 8 29 20l10 3c5 2 6 8 1 11l-9 5c-7 4-16 5-25 5H40c-12 0-22-5-22-15z"/><path fill="#e8d4bd" d="M86 38c6-8 13-9 20-3l9 9-10 10-15-2z"/><path fill="#3c2b22" d="M104 48l8 3-5 7-8-2z"/><circle cx="99" cy="42" r="1.7" fill="#111"/><path fill="#d8c0a5" d="M24 34l-8-13 15 6zM39 29l2-14 8 13z"/><path fill="#3b2a21" d="M32 67h7v17h-7zM75 67h7v17h-7zM92 65h7v19h-7zM52 68h7v16h-7z"/></svg>',buffalo:'<svg viewBox="0 0 120 90" aria-hidden="true"><path fill="#171615" d="M15 56c1-19 16-32 38-32h23c15 0 28 8 31 20l7 2c7 2 8 9 2 13l-10 6c-9 4-18 5-28 5H40c-15 0-26-5-25-14z"/><path fill="#101010" d="M87 37c7-10 16-12 24-5l8 8-10 14-16-2z"/><path fill="#756b5e" d="M87 30c-9-14-18-16-27-8 10-1 17 5 21 13zM111 30c8-14 17-16 25-8-10-1-17 5-21 13z"/><circle cx="101" cy="42" r="2" fill="#e6c86a"/><path fill="#111" d="M29 68h8v17h-8zM53 69h8v16h-8zM79 68h8v17h-8zM96 66h8v19h-8z"/></svg>',goat:'<svg viewBox="0 0 120 90" aria-hidden="true"><path fill="#d8c5aa" d="M20 56c2-18 15-30 34-30h17c14 0 25 7 30 18l10 2c6 1 8 7 3 11l-10 7c-7 4-16 6-25 6H43c-15 0-24-5-23-14z"/><path fill="#f1e5d3" d="M82 40c6-10 13-12 22-7l9 9-11 13-16-3z"/><path fill="#7c5a3c" d="M88 31l-6-15 12 9zM104 31l9-14 1 17z"/><path fill="#4a3728" d="M35 68h6v17h-6zM57 69h6v16h-6zM82 68h6v17h-6zM96 66h6v19h-6z"/><circle cx="101" cy="43" r="1.8" fill="#241d18"/></svg>',sheep:'<svg viewBox="0 0 120 90" aria-hidden="true"><path fill="#eee9df" d="M17 58c-1-17 11-30 27-31 7-11 24-11 31-1 13-5 27 4 28 17 10 2 14 10 9 17-6 9-18 11-29 10H40c-14 0-22-4-23-12z"/><path fill="#57534d" d="M87 42c8-7 17-6 23 2l5 10-13 9-14-7z"/><circle cx="103" cy="48" r="2" fill="#171615"/><path fill="#514d46" d="M31 67h7v17h-7zM54 68h7v16h-7zM79 67h7v17h-7zM94 65h7v19h-7z"/></svg>'};
-  const applyAnimalArt=()=>{const map={cattle:'cattle',buffalo:'buffalo',goat:'goat',sheep:'sheep'};document.querySelectorAll('#animalGrid .choice-card').forEach(b=>{const label=(b.getAttribute('aria-label')||'').toLowerCase();const k=Object.keys(map).find(x=>label.includes(x));const box=b.querySelector('.animal-icon');if(box&&k&&art[k]&&box.dataset.realistic!=='1'){box.innerHTML=art[k];box.dataset.realistic='1'}})};
-  const bind=()=>{const map={shareResultBtn:share,whatsappBtn:whatsapp,csvBtn:csv,pdfBtn:pdf,imageBtn:image};Object.entries(map).forEach(([id,fn])=>{const b=$('#'+id);if(!b||b.dataset.qaBound)return;b.dataset.qaBound='1';b.onclick=e=>{e.preventDefault();e.stopImmediatePropagation();Promise.resolve(fn()).catch(()=>toast('Action failed. Please try again.'))}});applyAnimalArt()};
-  const addShareButton=()=>{const actions=$('.result-actions'),wa=$('#whatsappBtn');if(actions&&wa&&!$('#shareResultBtn')){const b=document.createElement('button');b.id='shareResultBtn';b.className='action blue';b.type='button';b.textContent='↗ Share Result';actions.insertBefore(b,wa)}bind()};
-  document.addEventListener('DOMContentLoaded',()=>{addShareButton();new MutationObserver(addShareButton).observe(document.body,{subtree:true,childList:true})});
+  const $ = s => document.querySelector(s);
+  const getResult = () => {
+    try { return (JSON.parse(localStorage.getItem('plw-history-v2')) || [])[0] || null; }
+    catch { return null; }
+  };
+  const resultText = () => {
+    const r = getResult();
+    if (!r) return '';
+    const date = r.date ? new Date(r.date).toLocaleString('en-GB',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}) : '';
+    return [
+      'Pakistan Livestock Weight Calculation Result',
+      '(Khyber Traders - AnimalHealth.PK)', '',
+      'Farm Details:',
+      `Farm Name: ${r.profile?.farm || ''}`,
+      `Mobile Number: ${r.profile?.mobile || ''}`,
+      `Owner: ${r.profile?.owner || ''}`,
+      `City: ${r.profile?.city || ''}`,
+      `Tag ID: ${r.tag || 'No Tag'}`,
+      `Date: ${date}`, '---',
+      'Measurement:',
+      `Animal: ${r.animal || ''} (${r.breed || ''})`,
+      `Girth (G): ${r.girth} cm`,
+      `Length (L): ${r.length} cm`, '---',
+      'Calculated Weights:',
+      `LIVE WEIGHT: ${Number(r.weight).toFixed(2)} KG`,
+      `TRADE WEIGHT: ${(Number(r.weight)/40).toFixed(2)} Maunds`,
+      `MEAT ESTIMATE (50%): ~${(Number(r.weight)*0.5).toFixed(2)} KG`, '',
+      `Confidence Note: Calculated using ${r.breed || 'selected'} density profile (D=${r.density}).`, '',
+      '#LiveWeightCalculator #KhyberTraders #AnimalHealthPK'
+    ].join('\n');
+  };
+  const toast = msg => {
+    let n = $('#qaToast');
+    if (!n) { n = document.createElement('div'); n.id='qaToast'; document.body.append(n); }
+    n.textContent = msg; n.classList.add('show'); clearTimeout(n._t);
+    n._t = setTimeout(() => n.classList.remove('show'), 2600);
+  };
+  const whatsapp = () => {
+    const t=resultText(); if(!t) return toast('Calculate a result first.');
+    const u='https://wa.me/?text='+encodeURIComponent(t);
+    const w=window.open(u,'_blank','noopener,noreferrer'); if(!w) window.location.href=u;
+  };
+  const share = async () => {
+    const t=resultText(); if(!t) return toast('Calculate a result first.');
+    if (navigator.share) {
+      try { await navigator.share({title:'Pakistan Livestock Weight Calculation Result',text:t}); return; }
+      catch(e) { if(e?.name==='AbortError') return; }
+    }
+    try { await navigator.clipboard.writeText(t); toast('Result copied. Paste it into WhatsApp or any app.'); }
+    catch { whatsapp(); }
+  };
+  const csv = () => {
+    const r=getResult(); if(!r) return toast('Calculate a result first.');
+    const rows=[['Field','Value'],['Farm',r.profile?.farm||''],['Mobile',r.profile?.mobile||''],['Owner',r.profile?.owner||''],['City',r.profile?.city||''],['Tag ID',r.tag||'No Tag'],['Date',r.date||''],['Animal',r.animal||''],['Breed',r.breed||''],['Divisor',r.density||''],['Girth CM',r.girth||''],['Length CM',r.length||''],['Live Weight KG',Number(r.weight).toFixed(2)],['Trade Weight Maunds',(Number(r.weight)/40).toFixed(2)],['Meat Estimate KG',(Number(r.weight)*.5).toFixed(2)]];
+    const body=rows.map(row=>row.map(v=>'"'+String(v).replaceAll('"','""')+'"').join(',')).join('\n');
+    const a=document.createElement('a'),u=URL.createObjectURL(new Blob([body],{type:'text/csv;charset=utf-8'})); a.href=u;a.download='livestock-weight-result.csv';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),1000);toast('CSV exported.');
+  };
+  const pdf = () => { if(!getResult()) return toast('Calculate a result first.'); window.print(); };
+  const image = () => {
+    const r=getResult(); if(!r) return toast('Calculate a result first.');
+    const lines=['Pakistan Livestock Weight Calculation Result','(Khyber Traders - AnimalHealth.PK)','',`Farm: ${r.profile?.farm||''}`,`Animal: ${r.animal||''} (${r.breed||''})`,`Tag ID: ${r.tag||'No Tag'}`,`Girth: ${r.girth} cm · Length: ${r.length} cm`,`LIVE WEIGHT: ${Number(r.weight).toFixed(2)} KG`,`TRADE WEIGHT: ${(Number(r.weight)/40).toFixed(2)} Maunds`,`MEAT ESTIMATE: ~${(Number(r.weight)*.5).toFixed(2)} KG`];
+    const esc=s=>String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); const W=1080,H=760;
+    const body=lines.map((l,i)=>`<text x="72" y="${130+i*52}" font-family="Arial,sans-serif" font-size="${i===0?34:24}" font-weight="${i===0?700:400}" fill="${i===0?'#ffffff':'#12352a'}">${esc(l)}</text>`).join('');
+    const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}"><rect width="100%" height="100%" fill="#f7f4ec"/><rect x="40" y="40" width="1000" height="95" rx="22" fill="#0b5a43"/>${body}</svg>`;
+    const u=URL.createObjectURL(new Blob([svg],{type:'image/svg+xml'})),im=new Image();
+    im.onload=()=>{const cv=document.createElement('canvas');cv.width=W*2;cv.height=H*2;const x=cv.getContext('2d');x.scale(2,2);x.drawImage(im,0,0);cv.toBlob(b=>{const a=document.createElement('a'),v=URL.createObjectURL(b);a.href=v;a.download='livestock-weight-result.png';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(v),1000);URL.revokeObjectURL(u);toast('Image exported.')},'image/png')};
+    im.onerror=()=>{URL.revokeObjectURL(u);toast('Image export failed. Use PDF or Share Result.')}; im.src=u;
+  };
+  const art={
+    cattle:'<img src="assets/animals/cattle-realistic.svg" alt="Cattle" loading="eager">',
+    buffalo:'<img src="assets/animals/buffalo-realistic.svg" alt="Buffalo" loading="eager">',
+    goat:'<img src="assets/animals/goat-realistic.svg" alt="Goat" loading="eager">',
+    sheep:'<img src="assets/animals/sheep-realistic.svg" alt="Sheep" loading="eager">'
+  };
+  const applyAnimalArt=()=>{document.querySelectorAll('#animalGrid .choice-card').forEach(b=>{const label=(b.getAttribute('aria-label')||'').toLowerCase();const k=Object.keys(art).find(x=>label.includes(x));const box=b.querySelector('.animal-icon');if(box&&k&&box.dataset.realistic!=='1'){box.innerHTML=art[k];box.dataset.realistic='1';}})};
+  const bind=()=>{const map={shareResultBtn:share,whatsappBtn:whatsapp,csvBtn:csv,pdfBtn:pdf,imageBtn:image};Object.entries(map).forEach(([id,fn])=>{const b=$('#'+id);if(!b||b.dataset.qaBound)return;b.dataset.qaBound='1';b.onclick=e=>{e.preventDefault();e.stopImmediatePropagation();Promise.resolve(fn()).catch(()=>toast('Action failed. Please try again.'));};});applyAnimalArt();};
+  const addShareButton=()=>{const actions=$('.result-actions'),wa=$('#whatsappBtn');if(actions&&wa&&!$('#shareResultBtn')){const b=document.createElement('button');b.id='shareResultBtn';b.className='action blue';b.type='button';b.textContent='↗ Share Result';actions.insertBefore(b,wa);}bind();};
+  document.addEventListener('DOMContentLoaded',()=>{addShareButton();new MutationObserver(addShareButton).observe(document.body,{subtree:true,childList:true});});
 })();

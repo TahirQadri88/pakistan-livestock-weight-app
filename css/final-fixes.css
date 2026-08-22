@@ -1,0 +1,55 @@
+/* Final QA overrides: original compact Zinda Wazan proportions, clean bilingual alignment. */
+html,body{overflow-x:hidden}
+body{font-family:Inter,system-ui,sans-serif}
+[lang="ur"],.rtl{font-family:Inter,system-ui,sans-serif}
+.rtl .screen-head h2 span,.rtl .form-grid label>span,.rtl .choice-card small,.rtl .breed-card span,.rtl .urdu-help{font-family:'Noto Nastaliq Urdu',serif!important;line-height:2!important}
+.rtl .screen-head h2{line-height:1.65!important}
+.rtl .screen-head p,.rtl .tip,.rtl .form-grid small{line-height:1.9!important}
+.rtl .choice-card{direction:rtl}
+.rtl .choice-card .number{right:auto;left:10px}
+.rtl .breed-card{direction:rtl;grid-template-columns:1fr auto}
+.rtl .breed-card small{grid-column:2;grid-row:1/3}
+.rtl .result-info,.rtl .result-note{direction:rtl}
+.rtl .result-table{direction:rtl}
+.rtl .result-table th,.rtl .result-table td{text-align:right}
+.rtl .history-row{direction:rtl}
+.rtl .history-row .weight{margin-inline-start:12px}
+.rtl .form-grid input{direction:rtl;text-align:right}
+.rtl .form-grid input[type=number],.rtl .form-grid input[inputmode=decimal]{direction:ltr;text-align:left}
+.header-actions{align-items:center;flex-shrink:0}
+.header-actions .icon-btn{white-space:nowrap;display:grid;place-items:center}
+#langBtn{font-family:'Noto Nastaliq Urdu',Inter,sans-serif;font-size:11px;line-height:1}
+.result-actions .action{white-space:normal;line-height:1.35}
+.result-actions .action.green{font-weight:800}
+@media(max-width:520px){
+ .app-header{position:sticky;top:0;z-index:50}
+ .header-actions{gap:4px}
+ .header-actions .icon-btn{width:36px;min-width:36px}
+ main{width:100%;padding:0!important;background:transparent!important;box-shadow:none!important}
+ .screen{margin:10px 10px 14px!important}
+ .choice-card{min-height:116px}
+ .breed-card{min-height:86px}
+ .form-grid input{height:50px}
+ .result-card{border-radius:14px}
+ .result-top .title{font-size:20px;line-height:1.3}
+ .result-info{font-size:10px;line-height:1.8}
+ .result-table th,.result-table td{font-size:10px;padding:11px 9px;vertical-align:middle}
+ .result-table .big{font-size:20px}
+ .result-actions{gap:8px}
+ .action{min-height:48px;padding:9px 10px}
+ footer{padding-inline:18px}
+}
+@media(max-width:380px){
+ .app-header{padding-inline:10px!important}
+ .brand strong{font-size:12px}
+ .brand small{font-size:7px}
+ .brand-mark{width:32px;height:32px;flex-basis:32px}
+ .screen{margin-inline:7px!important;padding:19px 12px!important}
+ .screen-head h2{font-size:22px}
+ .choice-card{min-height:106px;padding-inline:4px}
+ .choice-card strong{font-size:13px}
+ .choice-card small{font-size:11px}
+ .breed-card{padding:13px 11px}
+ .breed-card strong{font-size:13px}
+ .breed-card span{font-size:13px}
+}

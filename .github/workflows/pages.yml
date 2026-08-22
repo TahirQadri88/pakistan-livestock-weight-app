@@ -26,20 +26,24 @@ jobs:
       - uses: actions/configure-pages@v5
 
       - name: Prepare production build
+        env:
+          BUILD_SHA: ${{ github.sha }}
         run: |
           python3 - <<'PY'
+          import os
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
+          v = os.environ['BUILD_SHA']
           css = ['./css/production-ui.css', './css/qa-share-fix.css']
           js = ['./js/production-ui.js', './js/qa-share-fix.js']
           for path in css:
-              tag = f'<link rel="stylesheet" href="{path}">'
-              if tag not in s:
+              tag = f'<link rel="stylesheet" href="{path}?v={v}">'
+              if path not in s:
                   s = s.replace('</head>', f'  {tag}\n</head>')
           for path in js:
-              tag = f'<script src="{path}"></script>'
-              if tag not in s:
+              tag = f'<script src="{path}?v={v}"></script>'
+              if path not in s:
                   s = s.replace('</body>', f'  {tag}\n</body>')
           p.write_text(s, encoding='utf-8')
           PY

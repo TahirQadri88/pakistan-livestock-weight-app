@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://tahirqadri88.github.io/pakistan-livestock-weight-app/sitemap.xml

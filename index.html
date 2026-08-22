@@ -1,1 +1,52 @@
-<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n    <title>Pakistan Livestock Weight Calculator</title>\n    <link rel="stylesheet" href="styles.css">\n    <script src="index.js" defer></script>\n</head>\n<body>\n    <header>\n        <h1>Pakistan Livestock Weight Calculator</h1>\n        <nav>\n            <button id="language-toggle">Change Language</button>\n        </nav>\n    </header>\n    <main>\n        <section id="registration">\n            <h2>Registration</h2>\n            <form id="registration-form">\n                <label for="name">Name:</label>\n                <input type="text" id="name" required>\n                <label for="email">Email:</label>\n                <input type="email" id="email" required>\n                <button type="submit">Register</button>\n            </form>\n        </section>\n        <section id="calculator">\n            <h2>Multi-Step Calculator</h2>\n            <form id="calculator-form">\n                <!-- Steps of the calculator go here -->\n                <button type="submit">Calculate</button>\n            </form>\n        </section>\n        <section id="results">\n            <h2>Results</h2>\n            <div id="result-cards">\n                <!-- Result cards go here -->\n            </div>\n            <button id="save-share">Save/Share</button>\n        </section>\n        <section id="history">\n            <h2>History</h2>\n            <div id="history-list">\n                <!-- History management goes here -->\n            </div>\n        </section>\n        <section id="settings">\n            <h2>Settings</h2>\n            <!-- Settings for the application -->\n        </section>\n    </main>\n    <footer>\n        <p>&copy; 2025 Pakistan Livestock Calculator. All rights reserved.</p>\n    </footer>\n    <script>\n        // JavaScript code for functionality here\n        document.getElementById('language-toggle').addEventListener('click', function() {\n            // Toggle between English and Urdu\n        });\n\n        // Service Worker and IndexedDB code here\n    <\/script>\n</body>\n</html>\n<style>\n/* CSS styles for the application */\nbody {\n    font-family: Arial, sans-serif;\n    margin: 0;\n    padding: 0;\n    background-color: #f5f5f5;\n}\nheader {\n    background-color: #007BFF;\n    color: white;\n    padding: 10px;\n    text-align: center;\n}\nnav button {\n    margin-top: 10px;\n}\nmain {\n    padding: 20px;\n}\nh2 {\n    border-bottom: 2px solid #007BFF;\n}\nfooter {\n    text-align: center;\n    margin-top: 20px;\n} \n</style>\n<script>\n// JavaScript code goes here\nwindow.addEventListener('DOMContentLoaded', function() {\n    // Initialization code\n});\n</script>
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#102a25">
+  <meta name="description" content="A premium livestock weight estimation tool for Pakistan. Estimate live weight from simple body measurements.">
+  <meta property="og:title" content="Pakistan Livestock Weight">
+  <meta property="og:description" content="A fast, field-friendly livestock weight estimation tool.">
+  <meta property="og:type" content="website">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/app.css">
+  <title>Pakistan Livestock Weight</title>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to calculator</a>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#top" aria-label="Pakistan Livestock Weight home"><span class="brand-mark" aria-hidden="true">KW</span><span><strong>Pakistan Livestock</strong><small>Weight Estimator</small></span></a>
+      <div class="top-actions"><button class="icon-button" id="languageToggle" type="button" aria-label="Switch language">اردو</button><button class="icon-button" id="themeToggle" type="button" aria-label="Toggle dark mode">◐</button></div>
+    </header>
+    <main id="main">
+      <section class="hero" id="top"><div class="eyebrow"><span></span><span data-i18n="eyebrow">FIELD TOOL · PAKISTAN</span></div><h1 data-i18n="headline">Know the animal.<br><em>Know the weight.</em></h1><p data-i18n="intro">A refined field calculator for estimating livestock live weight from body measurements.</p></section>
+      <section class="workspace" aria-label="Weight calculator">
+        <aside class="step-rail" aria-label="Calculator progress"><div class="step active"><b>01</b><span data-i18n="stepAnimal">Animal</span></div><div class="rail-line"></div><div class="step"><b>02</b><span data-i18n="stepMeasure">Measure</span></div><div class="rail-line"></div><div class="step"><b>03</b><span data-i18n="stepResult">Result</span></div></aside>
+        <div class="calculator-card">
+          <div class="card-head"><div><span class="section-kicker" data-i18n="estimate">LIVE WEIGHT ESTIMATE</span><h2 data-i18n="measureAnimal">Measure your animal</h2></div><span class="status-dot" title="Works offline"></span></div>
+          <form id="calculatorForm" novalidate>
+            <fieldset class="animal-fieldset"><legend data-i18n="animalType">Animal type</legend><div class="animal-grid">
+              <label class="animal-option selected"><input type="radio" name="animal" value="cattle" checked><span class="animal-icon">🐄</span><span data-i18n="cattle">Cattle</span></label>
+              <label class="animal-option"><input type="radio" name="animal" value="buffalo"><span class="animal-icon">🐃</span><span data-i18n="buffalo">Buffalo</span></label>
+              <label class="animal-option"><input type="radio" name="animal" value="sheep"><span class="animal-icon">🐑</span><span data-i18n="sheep">Sheep</span></label>
+              <label class="animal-option"><input type="radio" name="animal" value="goat"><span class="animal-icon">🐐</span><span data-i18n="goat">Goat</span></label>
+            </div></fieldset>
+            <div class="measure-grid">
+              <label class="measure-field"><span data-i18n="heartGirth">Heart girth</span><div class="input-wrap"><input id="girth" inputmode="decimal" type="number" min="20" max="120" step="0.1" required placeholder="e.g. 72"><span>in</span></div><small data-i18n="girthHelp">Measure around the chest, just behind the front legs.</small></label>
+              <label class="measure-field"><span data-i18n="bodyLength">Body length</span><div class="input-wrap"><input id="length" inputmode="decimal" type="number" min="20" max="100" step="0.1" required placeholder="e.g. 68"><span>in</span></div><small data-i18n="lengthHelp">Shoulder point to the base of the tail.</small></label>
+            </div>
+            <div class="notice" id="validation" role="alert" hidden></div>
+            <button class="primary-button" type="submit"><span data-i18n="calculate">Calculate estimated weight</span><span>→</span></button>
+          </form>
+        </div>
+      </section>
+      <section class="result-section" id="resultSection" hidden aria-live="polite"><div class="result-card"><div class="result-top"><span class="section-kicker" data-i18n="resultKicker">ESTIMATED LIVE WEIGHT</span><button class="text-button" id="shareButton" type="button" data-i18n="share">Share result</button></div><div class="weight-number"><span id="weightValue">—</span><small>kg</small></div><div class="result-meta"><span id="animalLabel">Cattle</span><span>•</span><span id="measurementLabel">72 × 68 in</span></div><div class="result-note" data-i18n="estimateNote">This is an estimate. Actual live weight can vary with breed, condition and measurement accuracy.</div></div></section>
+      <section class="history-section" id="historySection"><div class="section-heading"><div><span class="section-kicker" data-i18n="recent">RECENT</span><h2 data-i18n="history">Calculation history</h2></div><button class="text-button" id="clearHistory" type="button" data-i18n="clear">Clear</button></div><div id="historyList" class="history-list"><div class="empty-state" data-i18n="noHistory">Your recent calculations will appear here.</div></div></section>
+    </main>
+    <footer><span>© 2026 Khyber Traders</span><span data-i18n="footerNote">For estimation purposes only</span></footer>
+  </div>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

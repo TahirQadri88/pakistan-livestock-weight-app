@@ -1,7 +1,7 @@
 name: Deploy to GitHub Pages
 on:
   push:
-    branches: [main, app-redesign-v1]
+    branches: [main, app-redesign-v1, app-redesign-v2]
   workflow_dispatch:
 permissions:
   contents: read
